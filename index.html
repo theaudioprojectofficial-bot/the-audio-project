@@ -1,0 +1,1667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The Audio Project — Premium Hi-Fi Audio, Home Theater, Corporate AV & Acoustic Solutions in Kochi, Kerala.">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="The Audio Project">
+<meta property="og:description" content="Premium Hi-Fi Audio experiences tailored precisely to you.">
+<meta property="og:type" content="website">
+
+<!-- Security headers (best enforced server-side; these cover same-origin HTML delivery) -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+<!-- CSP: allow self + trusted CDN only.
+     NOTE: nonce-TAP2026 is static (this is a static HTML file — no server to generate
+     per-request nonces). For production, move to a server and generate random nonces
+     per request, OR replace with hash-based CSP for true security. -->
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self';
+           script-src 'self' https://cdnjs.cloudflare.com 'nonce-TAP2026';
+           style-src 'self' 'unsafe-inline';
+           img-src 'self' https://images.unsplash.com data: blob:;
+           media-src 'self' blob:;
+           font-src 'self';
+           connect-src 'none';
+           frame-ancestors 'none';
+           base-uri 'self';
+           form-action 'self';">
+<!-- NOTE: upgrade-insecure-requests intentionally omitted during development.
+     Add it back ONLY when deploying to a real HTTPS server. -->
+
+<title>The Audio Project — Premium Hi-Fi Audio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+/* Skip link — visible on keyboard focus only */
+.skip-link{
+  position:absolute;top:-999px;left:16px;
+  background:#e8192c;color:#fff;padding:10px 18px;
+  font-size:.85rem;font-weight:600;border-radius:0 0 8px 8px;
+  z-index:9999;text-decoration:none;
+  transition:top .2s;
+}
+.skip-link:focus{top:0;}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000;color:#fff;overflow-x:hidden;
+  font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;}
+.pin-spacer{background:#000!important;padding:0!important}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+#topNav{
+  position:fixed;top:0;left:0;right:0;z-index:500;height:66px;
+  background:rgba(0,0,0,.90);backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;justify-content:space-between;padding:0 52px;
+  transform:translateY(-100%);
+}
+.logo-img{height:40px;width:auto;object-fit:contain}
+nav{display:flex;align-items:center;}
+nav a{color:rgba(255,255,255,.72);text-decoration:none;margin-left:32px;font-size:.78rem;
+  font-weight:500;letter-spacing:.12em;text-transform:uppercase;position:relative;transition:color .2s;}
+nav a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1.5px;
+  background:#e8192c;transform:scaleX(0);transition:transform .25s;transform-origin:left;}
+nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
+
+/* SERVICES DROPDOWN */
+.nav-dropdown{position:relative;display:inline-block;margin-left:32px;}
+.nav-dropdown>a{margin-left:0;}
+.nav-dropdown>a .arrow{display:inline-block;margin-left:6px;font-size:.55rem;
+  transition:transform .25s;vertical-align:middle;}
+.nav-dropdown:hover>a .arrow{transform:rotate(180deg);}
+.dropdown-menu{
+  position:absolute;top:100%;left:50%;
+  transform:translateX(-50%) translateY(-4px);
+  background:rgba(8,8,10,.95);backdrop-filter:blur(24px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.10);border-radius:14px;
+  padding:18px 0 10px;   /* top padding bridges the gap — no dead zone */
+  min-width:240px;
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease,transform .22s ease;
+  box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.nav-dropdown:hover .dropdown-menu{
+  opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0);
+}
+.dropdown-menu a{
+  display:flex;align-items:center;gap:12px;padding:13px 22px;
+  font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.70);text-decoration:none;
+  transition:all .18s;margin-left:0;cursor:pointer;user-select:none;
+}
+.dropdown-menu a::after{display:none;}
+.dropdown-menu a:hover{color:#fff;background:rgba(255,255,255,.07);}
+.dropdown-menu a .dd-dot{width:6px;height:6px;border-radius:50%;background:#e8192c;
+  flex-shrink:0;opacity:0;transition:opacity .18s;}
+.dropdown-menu a:hover .dd-dot{opacity:1;}
+.dropdown-divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0;}
+
+/* ══════════════════════════════════════
+   SPEAKERS
+══════════════════════════════════════ */
+.spk{position:fixed;bottom:0;z-index:200;height:78vh;width:auto;pointer-events:none;will-change:transform;}
+.spk.left{left:4vw}.spk.right{right:4vw}
+.spk img{height:100%;width:auto;display:block;
+  filter:drop-shadow(-10px 20px 60px rgba(0,0,0,.85)) drop-shadow(0 0 20px rgba(0,0,0,.40));}
+.spk.right img{transform:scaleX(-1)}
+.base-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:130%;height:20px;
+  border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.6) 0%,transparent 70%);
+  filter:blur(8px);opacity:0;pointer-events:none;}
+.impact-ring{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scale(0);
+  width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.5) 0%,transparent 65%);opacity:0;pointer-events:none;}
+
+/* ══════════════════════════════════════
+   SECTION 1
+══════════════════════════════════════ */
+#s1{position:relative;height:100vh;overflow:hidden;background:#000;}
+#bgVideo{position:absolute;top:-10%;left:-5%;width:110%;height:120%;object-fit:cover;z-index:1;will-change:transform;}
+.vig{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.02) 45%,rgba(0,0,0,.44) 78%,rgba(0,0,0,.72) 100%);}
+@media(max-width:768px){
+  /* Light veil at top — lets video breathe.
+     Only the bottom 35% darkens to blend the speaker into the rock. */
+  .vig{
+    background:linear-gradient(
+      to bottom,
+      rgba(0,0,0,.10) 0%,
+      rgba(0,0,0,.05) 30%,
+      rgba(0,0,0,.18) 52%,
+      rgba(0,0,0,.60) 70%,
+      rgba(0,0,0,.88) 85%,
+      rgba(0,0,0,.96) 100%
+    );
+  }
+}
+#fog{position:absolute;bottom:0;left:0;right:0;height:55%;z-index:5;opacity:0;pointer-events:none;overflow:hidden;will-change:transform;}
+.fl{position:absolute;bottom:0;left:-20%;width:140%;height:100%;filter:blur(34px);}
+.fl1{background:radial-gradient(ellipse 78% 54% at 50% 100%,rgba(210,228,255,.24) 0%,rgba(180,208,255,.11) 50%,transparent 72%);animation:fd1 11s ease-in-out infinite alternate;}
+.fl2{background:radial-gradient(ellipse 54% 44% at 37% 100%,rgba(255,255,255,.15) 0%,transparent 64%);animation:fd2 14s ease-in-out infinite alternate;}
+.fl3{background:radial-gradient(ellipse 64% 37% at 64% 100%,rgba(200,218,255,.17) 0%,transparent 60%);animation:fd3 9s ease-in-out infinite alternate;}
+@keyframes fd1{from{transform:translateX(-6%) scaleY(.87)}to{transform:translateX(6%) scaleY(1.13)}}
+@keyframes fd2{from{transform:translateX(9%) scaleY(1.04)}to{transform:translateX(-9%) scaleY(.96)}}
+@keyframes fd3{from{transform:translateX(-4%) scaleY(1)}to{transform:translateX(7%) scaleY(1.17)}}
+#heroText{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  padding:0 clamp(60px,14vw,240px);opacity:0;transform:translateY(24px);
+  pointer-events:none;will-change:transform,opacity;}
+.ht-tag{font-size:.72rem;font-weight:700;letter-spacing:.42em;text-transform:uppercase;color:#e8192c;margin-bottom:14px;}
+.ht-divider{width:52px;height:2px;background:#e8192c;border-radius:1px;margin:0 auto 18px;opacity:0;transform:scaleX(0);transform-origin:center;}
+.ht-title{font-size:clamp(2.8rem,6.5vw,6rem);font-weight:900;line-height:1.0;letter-spacing:-.03em;
+  color:#fff;text-shadow:0 4px 50px rgba(0,0,0,.65);margin-bottom:20px;}
+.ht-title em{font-style:normal;color:#e8192c;-webkit-text-stroke:2.5px #fff;paint-order:stroke fill;}
+.ht-desc{font-size:clamp(.9rem,1.25vw,1.12rem);font-weight:300;line-height:1.75;color:rgba(200,200,200,.80);max-width:580px;}
+#curtain{position:absolute;inset:0;z-index:18;background:rgba(4,8,16,1);opacity:0;pointer-events:none;}
+/* Fog-light flare — brief luminous overexposure at transition peak */
+#s1-flare{
+  position:absolute;inset:0;z-index:17;pointer-events:none;opacity:0;
+  background:radial-gradient(ellipse 90% 55% at 50% 55%,
+    rgba(180,210,255,0.55) 0%,
+    rgba(140,180,240,0.25) 40%,
+    transparent 72%);
+}
+.wm{position:absolute;bottom:0;height:80px;z-index:15;pointer-events:none;}
+/* Watermark blot — removed (video no longer needs masking) */
+.wm-blot{display:none;}
+
+/* ══════════════════════════════════════
+   SECTION 2 — fog video + service cards
+══════════════════════════════════════ */
+#s2{position:relative;width:100%;height:100vh;overflow:hidden;background:#000;}
+#vid2{position:absolute;top:-10%;left:0;width:100%;height:120%;object-fit:cover;
+  display:block;z-index:1;will-change:transform;}
+.vig2{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,.30) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.40) 100%);}
+
+/* ── Service cards ── */
+.svc-slide{
+  position:absolute;inset:0;z-index:5;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 6vw 60px;
+  opacity:0;pointer-events:none;
+  will-change:transform,opacity;
+}
+
+/* DARKER glass card for readability */
+.svc-glass{
+  display:flex;align-items:center;gap:5vw;
+  width:100%;max-width:1180px;
+  background:rgba(14,14,26,.70);
+  backdrop-filter:blur(32px) saturate(1.6);
+  -webkit-backdrop-filter:blur(32px) saturate(1.6);
+  border:1px solid rgba(255,255,255,.22);
+  border-top:1px solid rgba(255,255,255,.20);
+  border-radius:28px;
+  padding:52px 56px;
+  box-shadow:0 8px 80px rgba(0,0,0,.70), inset 0 1px 0 rgba(255,255,255,.10);
+}
+.svc-text{flex:1;min-width:0;}
+.svc-tag{
+  font-size:.68rem;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+  color:#00d4ff;margin-bottom:14px;display:block;
+  text-shadow:0 0 20px rgba(0,212,255,.4);
+}
+.svc-title{
+  font-size:clamp(2rem,3.8vw,3.2rem);font-weight:900;
+  line-height:1.08;letter-spacing:-.02em;
+  color:#fff;margin-bottom:20px;
+  text-shadow:0 2px 20px rgba(0,0,0,.8);
+}
+.svc-desc{
+  font-size:clamp(.9rem,1.05vw,1.02rem);font-weight:400;
+  line-height:1.80;color:rgba(230,230,230,.90);
+  max-width:520px;
+  text-shadow:0 1px 8px rgba(0,0,0,.6);
+}
+.svc-img-wrap{
+  flex-shrink:0;
+  width:clamp(190px,20vw,300px);
+  height:clamp(190px,20vw,300px);
+  border-radius:50%;overflow:hidden;
+  border:2px solid rgba(255,255,255,.20);
+  box-shadow:0 0 0 8px rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.7);
+  background:#111;
+}
+.svc-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
+.svc-num{
+  position:absolute;bottom:44px;right:56px;
+  font-size:4.5rem;font-weight:900;
+  color:rgba(255,255,255,.07);letter-spacing:-.04em;
+  line-height:1;pointer-events:none;user-select:none;
+}
+
+/* Progress dots */
+#svcDots{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  z-index:10;display:flex;gap:10px;opacity:0;transition:opacity .4s;
+}
+.sdot{width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.25);transition:background .3s,transform .3s;}
+.sdot.active{background:#00d4ff;transform:scale(1.4);}
+
+/* ══════════════════════════════════════
+   TRENDING PRODUCTS — SPLIT + GALAXY
+══════════════════════════════════════ */
+#trending{
+  width:100%;height:100vh;
+  display:flex;flex-direction:row;
+  align-items:center;
+  overflow:hidden;position:relative;
+  background:#000;
+}
+#galaxy-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;pointer-events:none;z-index:0;
+  opacity:0.35;
+}
+/* LEFT panel */
+.tr-left{
+  position:relative;z-index:5;
+  flex:0 0 42%;padding:0 0 0 7vw;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.tr-tag{
+  font-size:.70rem;font-weight:700;letter-spacing:.38em;
+  text-transform:uppercase;color:#00d4ff;margin-bottom:14px;
+  text-shadow:0 0 20px rgba(0,212,255,.5);
+}
+.tr-title{
+  font-size:clamp(2rem,3.8vw,3.4rem);font-weight:900;
+  letter-spacing:-.02em;color:#fff;line-height:1.08;margin-bottom:20px;
+}
+.tr-desc{
+  font-size:clamp(.88rem,1.05vw,.98rem);color:rgba(200,200,200,.70);
+  line-height:1.78;max-width:380px;margin-bottom:28px;
+}
+.tr-stats{display:flex;gap:28px;margin-bottom:32px;}
+.tr-stat-num{font-size:1.75rem;font-weight:900;color:#fff;line-height:1;}
+.tr-stat-lbl{font-size:.64rem;color:rgba(255,255,255,.42);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
+/* .tr-cta removed */
+.tr-cta--unused{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:12px 26px;border-radius:50px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  color:#fff;font-size:.78rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;transition:all .25s ease;width:fit-content;
+}
+.tr-cta:hover{background:rgba(0,212,255,.12);border-color:#00d4ff;color:#00d4ff;}
+.tr-cta-arrow{transition:transform .25s;}
+.tr-cta:hover .tr-cta-arrow{transform:translateX(5px);}
+/* RIGHT panel */
+.tr-right{
+  position:relative;z-index:5;
+  flex:1;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+/* orbital box removed — products float directly on the galaxy background */
+.tr-right::before{ display:none; }
+@keyframes glassGlow{
+  0%,100%{box-shadow:0 8px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06),0 0 40px rgba(99,60,220,.25),0 0 80px rgba(59,130,246,.12),0 0 0 1px rgba(139,92,246,.15);}
+  50%{box-shadow:0 8px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08),0 0 60px rgba(99,60,220,.38),0 0 120px rgba(59,130,246,.18),0 0 0 1px rgba(139,92,246,.28);}
+}
+#orb-stage,#orb-hint{position:relative;z-index:2;}
+/* Orbital stage — fixed size box, nodes positioned within it */
+#orb-stage{
+  position:relative;
+  width:460px;height:460px;
+  flex-shrink:0;
+}
+
+/* Center orb — centred inside fixed stage */
+#orb-center{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,#8b5cf6,#3b82f6,#14b8a6);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10;animation:orbPulse 2s ease-in-out infinite;
+}
+#orb-center::before,#orb-center::after{
+  content:'';position:absolute;border-radius:50%;
+  border:1px solid rgba(255,255,255,.2);animation:orbPing 1.2s ease-in-out infinite;
+}
+#orb-center::before{width:80px;height:80px;}
+#orb-center::after{width:100px;height:100px;animation-delay:.5s;border-color:rgba(255,255,255,.1);}
+.orb-core{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);}
+@keyframes orbPulse{0%,100%{box-shadow:0 0 20px rgba(139,92,246,.7)}50%{box-shadow:0 0 45px rgba(59,130,246,.9)}}
+@keyframes orbPing{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.8);opacity:0}}
+/* Orbit ring — centred */
+#orb-ring{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:380px;height:380px;
+  border-radius:50%;border:1px solid rgba(255,255,255,.10);
+  pointer-events:none;
+}
+/* Nodes — positioned from centre of stage via JS */
+.orb-node{
+  position:absolute;top:50%;left:50%;
+  cursor:pointer;transition:opacity .4s ease;
+  display:flex;flex-direction:column;align-items:center;
+}
+.orb-dot{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#0a0a0a;border:2px solid rgba(255,255,255,.35);
+  color:#fff;font-size:18px;transition:all .3s ease;
+  position:relative;z-index:2;
+}
+.orb-node.active .orb-dot{
+  background:#fff;color:#000;border-color:#fff;
+  transform:scale(1.4);box-shadow:0 0 24px rgba(255,255,255,.5);
+}
+.orb-node.related .orb-dot{
+  background:rgba(255,255,255,.3);border-color:#fff;
+  animation:relPulse .8s ease-in-out infinite alternate;
+}
+@keyframes relPulse{from{box-shadow:0 0 0 rgba(255,255,255,.2)}to{box-shadow:0 0 18px rgba(255,255,255,.7)}}
+.orb-label{
+  margin-top:8px;font-size:.64rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(255,255,255,.65);white-space:nowrap;transition:all .3s;
+}
+.orb-node.active .orb-label{color:#fff;transform:scale(1.15);}
+.orb-halo{
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);
+  pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%);
+}
+/* Card — fixed position so it never clips */
+.orb-card{
+  position:fixed;width:250px;
+  background:rgba(18,18,32,.82);
+  backdrop-filter:blur(28px) saturate(1.5);
+  -webkit-backdrop-filter:blur(28px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.28);
+  border-top:1px solid rgba(255,255,255,.40);
+  border-radius:16px;padding:16px;z-index:800;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.18);
+  pointer-events:all;animation:cardIn .28s ease forwards;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.orb-card-img{width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block;}
+.orb-card-award{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:.60rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 10px;border-radius:20px;
+  margin-bottom:8px;border:1px solid;
+}
+.orb-card-award.done{color:#fff;background:#000;border-color:rgba(255,255,255,.4);}
+.orb-card-award.prog{color:#000;background:#fff;border-color:#000;}
+.orb-card-title{font-size:.95rem;font-weight:800;color:#fff;margin-bottom:4px;}
+.orb-card-cat{font-size:.62rem;color:rgba(255,255,255,.45);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.orb-card-desc{font-size:.76rem;color:rgba(215,215,215,.85);line-height:1.60;margin-bottom:10px;}
+.orb-card-energy-row{display:flex;justify-content:space-between;font-size:.68rem;color:rgba(255,255,255,.55);margin-bottom:4px;}
+.orb-card-bar{width:100%;height:3px;background:rgba(255,255,255,.10);border-radius:2px;overflow:hidden;}
+.orb-card-fill{height:100%;background:linear-gradient(to right,#3b82f6,#8b5cf6);border-radius:2px;}
+#orb-hint{
+  position:absolute;bottom:18px;right:20px;
+  font-size:.60rem;color:rgba(255,255,255,.20);letter-spacing:.10em;
+  text-transform:uppercase;pointer-events:none;z-index:5;
+}
+@media(max-width:900px){
+  #trending{flex-direction:column;height:auto;min-height:100vh;padding:80px 0 60px;}
+  .tr-left{flex:none;padding:0 6vw;text-align:center;align-items:center;margin-bottom:20px;}
+  .tr-desc{max-width:100%;}
+  #orb-stage{width:320px;height:320px;}
+  #orb-ring{width:270px;height:270px;}
+}
+@media(max-width:480px){
+  #orb-stage{width:260px;height:260px;}
+  #orb-ring{width:210px;height:210px;}
+}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+#footer{
+  background:#0a0a0a;
+  border-top:1px solid rgba(255,255,255,.07);
+  padding:70px 52px 40px;
+}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1.4fr;
+  gap:48px;margin-bottom:56px;
+}
+.footer-brand .logo-img{height:38px;margin-bottom:20px;display:block;}
+.footer-brand p{
+  font-size:.88rem;line-height:1.75;color:rgba(200,200,200,.6);
+  max-width:300px;margin-bottom:24px;
+}
+
+.footer-col h4{
+  font-size:.72rem;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:#fff;margin-bottom:20px;
+}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:11px;}
+.footer-col ul li a{
+  font-size:.85rem;color:rgba(200,200,200,.55);
+  text-decoration:none;transition:color .18s;
+}
+.footer-col ul li a:hover{color:#00d4ff;}
+
+.footer-contact p{
+  font-size:.85rem;color:rgba(200,200,200,.55);
+  line-height:1.70;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;
+}
+.footer-contact p span.icon{color:#00d4ff;flex-shrink:0;margin-top:2px;}
+
+.footer-divider{height:1px;background:rgba(255,255,255,.06);margin-bottom:28px;}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.footer-bottom p{font-size:.78rem;color:rgba(200,200,200,.35);}
+.footer-bottom a{color:rgba(200,200,200,.35);text-decoration:none;transition:color .18s;}
+.footer-bottom a:hover{color:#fff;}
+
+/* ══════════════════════════════════════
+   MOBILE CENTERED SPEAKER
+══════════════════════════════════════ */
+#spkMobile{
+  display:none; /* hidden on desktop */
+}
+@media(max-width:768px){
+  /* ── Hero section: always has a rich dark fallback in case video is blocked ── */
+  #s1{
+    background: linear-gradient(160deg,#0a0a14 0%,#160a0f 45%,#0a0a14 100%) !important;
+  }
+
+  /* ── Hide desktop side speakers ── */
+  #spkL, #spkR{ display:none !important; }
+
+  /* ── Single centered speaker — absolute inside #s1, scrolls away with hero ── */
+  #spkMobile{
+    display:block;
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:8;
+    pointer-events:none;
+    height:62vh;
+    width:auto;
+  }
+  #spkMobile img{
+    height:100%;
+    width:auto;
+    display:block;
+    /* gentle dark drop-shadow at base gives depth without killing the image */
+    filter:
+      drop-shadow(0 -2px 18px rgba(0,0,0,.4))
+      drop-shadow(0 24px 48px rgba(0,0,0,.85));
+  }
+  /* Rock-contact shadow — widens at base to sell the "sitting on rock" look */
+  .spk-mob-glow{
+    position:absolute;
+    bottom:0px; left:50%;
+    transform:translateX(-50%);
+    width:75%; height:18px;
+    border-radius:50%;
+    background:radial-gradient(ellipse,rgba(0,0,0,.75) 0%,transparent 70%);
+    filter:blur(8px);
+  }
+}
+@media(max-width:420px){
+  #spkMobile{ height:50vh; }
+}
+
+/* ══════════════════════════════════════
+   HAMBURGER BUTTON (mobile only)
+══════════════════════════════════════ */
+.hamburger{
+  display:none;flex-direction:column;justify-content:center;
+  gap:5px;width:40px;height:40px;cursor:pointer;
+  background:none;border:none;padding:4px;z-index:600;
+}
+.hamburger span{
+  display:block;height:2px;border-radius:2px;
+  background:#fff;transition:all .32s ease;transform-origin:center;
+}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+/* ══════════════════════════════════════
+   MOBILE NAV OVERLAY
+══════════════════════════════════════ */
+#mobileNav{
+  display:none;
+  position:fixed;inset:0;z-index:550;
+  background:rgba(0,0,0,.97);backdrop-filter:blur(20px);
+  flex-direction:column;justify-content:center;align-items:center;
+  gap:0;padding:80px 32px 40px;
+  opacity:0;pointer-events:none;
+  transition:opacity .35s ease;
+}
+#mobileNav.open{opacity:1;pointer-events:all;}
+.mnav-link{
+  display:block;width:100%;text-align:center;
+  font-size:1.4rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(255,255,255,.80);
+  text-decoration:none;padding:18px 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  transition:color .2s;
+}
+.mnav-link:hover,.mnav-link:active{color:#00d4ff;}
+.mnav-svc-toggle{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;font-size:1.4rem;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:rgba(255,255,255,.80);
+  background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);
+  padding:18px 0;cursor:pointer;transition:color .2s;
+}
+.mnav-svc-toggle .m-arrow{transition:transform .28s;}
+.mnav-svc-toggle.open .m-arrow{transform:rotate(180deg);}
+.mnav-svc-list{
+  display:none;width:100%;flex-direction:column;
+  background:rgba(255,255,255,.04);border-radius:12px;
+  margin:4px 0 4px;overflow:hidden;
+}
+.mnav-svc-list.open{display:flex;}
+.mnav-svc-item{
+  display:block;text-align:center;padding:14px 20px;
+  font-size:.95rem;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;color:rgba(200,200,200,.75);
+  text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05);
+  transition:color .18s, background .18s;
+}
+.mnav-svc-item:last-child{border-bottom:none;}
+.mnav-svc-item:hover,.mnav-svc-item:active{color:#00d4ff;background:rgba(0,212,255,.06);}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — TABLET (≤ 900px)
+══════════════════════════════════════ */
+@media(max-width:900px){
+  .svc-glass{gap:3vw;padding:40px 36px;}
+  .svc-title{font-size:clamp(1.7rem,4vw,2.6rem);}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 768px)
+══════════════════════════════════════ */
+@media(max-width:768px){
+
+  /* NAV — logo left, hamburger right, more visible */
+  #topNav{padding:0 18px; background:rgba(0,0,0,.96);}
+  #topNav nav{display:none;}
+  .hamburger{
+    display:flex;
+    background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:8px;
+    width:44px;height:44px;gap:5px;
+    padding:10px;
+  }
+  .hamburger span{
+    background:#fff;
+    height:2px;
+    width:100%;
+    border-radius:2px;
+    display:block;
+  }
+
+  /* SPEAKERS — much shorter so they don't invade text */
+  .spk{height:28vh; bottom:0;}
+  .spk.left{left:0;}
+  .spk.right{right:0;}
+
+  /* HERO TEXT — top half of screen only */
+  #heroText{
+    padding: 0 22px;
+    justify-content: flex-start;
+    padding-top: 14vh;
+    padding-bottom: 46vh; /* keeps text out of the bottom 46% where speaker lives */
+    align-items: center;
+    text-align: center;
+  }
+  .ht-tag{
+    font-size:.68rem; letter-spacing:.3em; margin-bottom:10px;
+  }
+  .ht-title{
+    font-size: clamp(2.2rem, 10.5vw, 3.4rem);
+    line-height: 1.05;
+    text-shadow: 0 2px 24px rgba(0,0,0,.95), 0 0 50px rgba(0,0,0,.8);
+    margin-bottom: 14px;
+  }
+  .ht-title em{ -webkit-text-stroke:1.5px #fff; }
+  .ht-desc{
+    font-size: .88rem;
+    color: rgba(255,255,255,.92);
+    text-shadow: 0 1px 10px rgba(0,0,0,.98), 0 2px 20px rgba(0,0,0,.9);
+    max-width: 100%;
+    line-height: 1.65;
+  }
+
+  /* SERVICE CARD — stack vertically */
+  .svc-slide{padding:74px 14px 55px;}
+  .svc-glass{
+    flex-direction:column;align-items:center;
+    text-align:center;padding:32px 24px;gap:22px;
+  }
+  .svc-text{width:100%;}
+  .svc-desc{max-width:100%;}
+  .svc-img-wrap{
+    width:130px;height:130px;
+    order:-1;               /* image on top */
+  }
+  .svc-num{font-size:3rem;bottom:30px;right:24px;}
+  #svcDots{bottom:18px;}
+
+  /* FOOTER */
+  #footer{padding:48px 22px 30px;}
+  .footer-top{grid-template-columns:1fr;gap:36px;}
+  .footer-brand p{max-width:100%;}
+  .footer-bottom{flex-direction:column;gap:10px;text-align:center;}
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE — SMALL MOBILE (≤ 420px)
+══════════════════════════════════════ */
+@media(max-width:420px){
+  .spk{height:22vh;}
+  #heroText{ padding:0 16px; padding-top:12vh; padding-bottom:42vh; }
+  .ht-title{font-size:clamp(2rem,11.5vw,2.8rem);}
+  .svc-glass{padding:26px 16px;}
+  .svc-title{font-size:1.65rem;}
+  .svc-img-wrap{width:110px;height:110px;}
+}
+
+/* ══════════════════════════════════════
+   PRELOADER
+══════════════════════════════════════ */
+#preloader{
+  position:fixed;inset:0;z-index:9999;
+  background:#000;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:32px;
+  transition:opacity .7s ease, visibility .7s ease;
+}
+#preloader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.pre-logo{
+  height:56px;width:auto;
+  animation:prePulse 1.8s ease-in-out infinite;
+}
+@keyframes prePulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.06);}}
+.pre-bars{display:flex;align-items:flex-end;gap:5px;height:36px;}
+.pre-bar{
+  width:4px;border-radius:3px;
+  background:linear-gradient(to top,#e8192c,#ff6b6b);
+  animation:preBar 1.1s ease-in-out infinite;
+}
+.pre-bar:nth-child(1){height:14px;animation-delay:0s;}
+.pre-bar:nth-child(2){height:28px;animation-delay:.12s;}
+.pre-bar:nth-child(3){height:36px;animation-delay:.24s;}
+.pre-bar:nth-child(4){height:22px;animation-delay:.36s;}
+.pre-bar:nth-child(5){height:32px;animation-delay:.48s;}
+.pre-bar:nth-child(6){height:18px;animation-delay:.60s;}
+.pre-bar:nth-child(7){height:26px;animation-delay:.72s;}
+@keyframes preBar{
+  0%,100%{transform:scaleY(1);opacity:.5;}
+  50%{transform:scaleY(1.6);opacity:1;}
+}
+.pre-label{
+  font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);font-weight:400;
+}
+
+/* ══════════════════════════════════════
+   SCROLL PROGRESS BAR
+══════════════════════════════════════ */
+#scrollBar{
+  position:fixed;top:0;left:0;z-index:9990;
+  height:3px;width:0%;
+  background:linear-gradient(to right,#e8192c,#ff6b35,#e8192c);
+  background-size:200% 100%;
+  animation:barShimmer 2s linear infinite;
+  box-shadow:0 0 10px rgba(232,25,44,.7);
+  transition:width .08s linear;
+  pointer-events:none;
+}
+@keyframes barShimmer{0%{background-position:0% 0;}100%{background-position:200% 0;}}
+
+/* ══════════════════════════════════════
+   COOKIE CONSENT BANNER
+══════════════════════════════════════ */
+#cookieBanner{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+  z-index:8000;width:min(680px,94vw);
+  background:rgba(10,10,18,.96);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:18px;
+  padding:22px 28px;
+  display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  box-shadow:0 16px 60px rgba(0,0,0,.7),0 0 0 1px rgba(232,25,44,.12);
+  transition:opacity .5s ease,transform .5s ease;
+}
+#cookieBanner.hidden{opacity:0;transform:translateX(-50%) translateY(30px);pointer-events:none;}
+.ck-text{flex:1;min-width:220px;}
+.ck-text p{font-size:.78rem;color:rgba(255,255,255,.72);line-height:1.6;}
+.ck-text a{color:#e8192c;text-decoration:underline;text-underline-offset:3px;}
+.ck-btns{display:flex;gap:10px;flex-shrink:0;flex-wrap:wrap;}
+.ck-accept{
+  padding:10px 22px;border-radius:50px;border:none;cursor:pointer;
+  background:#e8192c;color:#fff;font-size:.74rem;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:background .2s,transform .15s;
+}
+.ck-accept:hover{background:#c41020;transform:scale(1.04);}
+.ck-reject{
+  padding:10px 20px;border-radius:50px;cursor:pointer;
+  background:transparent;color:rgba(255,255,255,.55);
+  border:1px solid rgba(255,255,255,.20);
+  font-size:.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  transition:all .2s;
+}
+.ck-reject:hover{border-color:rgba(255,255,255,.5);color:#fff;}
+.ck-icon{font-size:1.5rem;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<noscript>
+  <style>
+    #preloader{display:none!important;}
+    #topNav{transform:none!important;}
+    .spk{display:none!important;}
+  </style>
+  <div style="position:fixed;inset:0;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:sans-serif;text-align:center;padding:24px;z-index:9999;">
+    <img src="logo.jpg" alt="The Audio Project" style="height:50px;">
+    <p style="color:rgba(255,255,255,.6);font-size:.9rem;">This website requires JavaScript to run.<br>Please enable JavaScript in your browser settings.</p>
+    <a href="mailto:hello@theaudioproject.in" style="color:#e8192c;font-size:.85rem;">Contact us directly →</a>
+  </div>
+</noscript>
+
+<!-- PRELOADER -->
+<div id="preloader" role="status" aria-label="Loading The Audio Project">
+  <img class="pre-logo" src="logo.jpg" alt="The Audio Project">
+  <div class="pre-bars">
+    <div class="pre-bar"></div><div class="pre-bar"></div><div class="pre-bar"></div>
+    <div class="pre-bar"></div><div class="pre-bar"></div><div class="pre-bar"></div>
+    <div class="pre-bar"></div>
+  </div>
+  <span class="pre-label">Tuning your experience…</span>
+</div>
+
+<!-- PRELOADER DISMISS — own script tag, independent of GSAP -->
+<script nonce="TAP2026">
+(function(){
+  var loader = document.getElementById('preloader');
+  var done   = false;
+  function dismiss(){
+    if(done) return; done = true;
+    loader.classList.add('hidden');
+    setTimeout(function(){ loader.style.display='none'; }, 800);
+  }
+  var vid = document.getElementById('bgVideo');
+  if(vid){
+    vid.addEventListener('canplay',        dismiss, {once:true});
+    vid.addEventListener('canplaythrough', dismiss, {once:true});
+    vid.addEventListener('error',          dismiss, {once:true});
+    if(vid.readyState >= 2) { dismiss(); }
+  }
+  window.addEventListener('load', dismiss, {once:true});
+  setTimeout(dismiss, 2500); /* hard cap — never gets stuck */
+})();
+</script>
+
+<!-- SCROLL PROGRESS BAR -->
+<div id="scrollBar" role="progressbar" aria-label="Page scroll progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+
+<!-- COOKIE CONSENT BANNER — hidden by default, JS shows it for new visitors only -->
+<div id="cookieBanner" role="dialog" aria-label="Cookie consent" aria-live="polite" style="display:none">
+  <span class="ck-icon">🍪</span>
+  <div class="ck-text">
+    <p>We use cookies to enhance your experience and analyse site performance. By continuing, you agree to our <a href="privacy.html">Privacy Policy</a>. You can manage your preferences at any time.</p>
+  </div>
+  <div class="ck-btns">
+    <button class="ck-accept" id="ckAccept">Accept All</button>
+    <button class="ck-reject" id="ckReject">Essential Only</button>
+  </div>
+</div>
+
+<!-- Skip to main content (accessibility) -->
+<a href="#s1" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<header id="topNav" role="banner">
+  <img class="logo-img" src="logo.jpg" alt="The Audio Project">
+  <nav>
+    <a href="#" id="navHome">Home</a>
+    <div class="nav-dropdown">
+      <a href="#" id="navSvc" aria-haspopup="true" aria-expanded="false">Services <span class="arrow">▼</span></a>
+      <div class="dropdown-menu" role="menu">
+        <a href="#" class="dd-link" data-svc="0"><span class="dd-dot"></span>Corporate AV Solutions</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dd-link" data-svc="1"><span class="dd-dot"></span>Acoustic Solutions</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dd-link" data-svc="2"><span class="dd-dot"></span>Home Theater</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" class="dd-link" data-svc="3"><span class="dd-dot"></span>Hi-Fi Stereo</a>
+      </div>
+    </div>
+    <a href="#" id="navContact">Contact Us</a>
+  </nav>
+  <!-- Hamburger (mobile only) -->
+  <button class="hamburger" id="hamburger" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<!-- MOBILE NAV OVERLAY -->
+<div id="mobileNav">
+  <a href="#" class="mnav-link" id="mNavHome">Home</a>
+
+  <button class="mnav-svc-toggle" id="mNavSvcToggle">
+    Services <span class="m-arrow">▼</span>
+  </button>
+  <div class="mnav-svc-list" id="mNavSvcList">
+    <a href="#" class="mnav-svc-item dd-link" data-svc="0">Corporate AV Solutions</a>
+    <a href="#" class="mnav-svc-item dd-link" data-svc="1">Acoustic Solutions</a>
+    <a href="#" class="mnav-svc-item dd-link" data-svc="2">Home Theater</a>
+    <a href="#" class="mnav-svc-item dd-link" data-svc="3">Hi-Fi Stereo</a>
+  </div>
+
+  <a href="#" class="mnav-link" id="mNavContact">Contact Us</a>
+</div>
+
+<!-- SPEAKERS — desktop: two sides | mobile: one centered -->
+<div class="spk left"  id="spkL"><img src="speaker_cropped.png" alt="Left speaker" loading="eager"><div class="base-glow" id="glowL"></div><div class="impact-ring" id="impL"></div></div>
+<div class="spk right" id="spkR"><img src="speaker_cropped.png" alt="Right speaker" loading="eager"><div class="base-glow" id="glowR"></div><div class="impact-ring" id="impR"></div></div>
+<!-- MOBILE ONLY: single centered static speaker -->
+<div id="spkMobile">
+  <img src="speaker_cropped.png" alt="Speaker">
+  <div class="spk-mob-glow"></div>
+</div>
+
+<!-- SECTION 1 — HERO -->
+<section id="s1" role="main" aria-label="Hero">
+  <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
+    <source src="hero-bg.mp4" type="video/mp4">
+  </video>
+  <div class="vig"></div>
+  <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
+  <div class="wm" style="left:0;width:220px;background:linear-gradient(to right,rgba(0,0,0,.92) 60%,transparent)"></div>
+  <!-- full bottom strip covers any bottom watermark -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:56px;z-index:16;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.95),transparent)"></div>
+  <!-- center-bottom blot for Gemini / AI icon -->
+  <div class="wm-blot" style="bottom:6px;left:50%;transform:translateX(-50%);width:140px;height:38px;"></div>
+  <!-- bottom-right blot -->
+  <div class="wm-blot" style="bottom:6px;right:8px;width:120px;height:38px;"></div>
+  <div id="fog"><div class="fl fl1"></div><div class="fl fl2"></div><div class="fl fl3"></div></div>
+  <div id="heroText">
+    <p class="ht-tag">Premium Hi-Fi Audio</p>
+    <div class="ht-divider" id="htDivider"></div>
+    <h1 class="ht-title">Your Gateway to<br><em>Excellence</em></h1>
+    <p class="ht-desc">At The Audio Project, it's more than just buying speakers or headphones — it's about embarking on a sonic adventure designed just for you.</p>
+  </div>
+  <div id="s1-flare"></div>
+  <div id="curtain"></div>
+</section>
+
+<!-- SECTION 2 — AERIAL FOG VIDEO + SERVICE CARDS -->
+<div id="s2">
+  <video id="vid2" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
+    <source src="fog_seekable.mp4" type="video/mp4">
+  </video>
+  <div class="vig2"></div>
+
+  <!-- CARD 1: Corporate AV -->
+  <div class="svc-slide" id="svc0">
+    <div class="svc-glass">
+      <div class="svc-text">
+        <span class="svc-tag">Reimagining Workforce Solutions</span>
+        <h2 class="svc-title">Corporate AV<br>Solutions</h2>
+        <p class="svc-desc">Our corporate audio-visual solutions are designed to enhance productivity by enabling seamless visual and audio communication, facilitating efficient collaboration and decision-making processes across your organisation.</p>
+      </div>
+      <div class="svc-img-wrap">
+        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=600&fit=crop&crop=center" alt="Corporate AV Solutions" loading="lazy" decoding="async">
+      </div>
+    </div>
+    <div class="svc-num">01</div>
+  </div>
+
+  <!-- CARD 2: Acoustic Solutions -->
+  <div class="svc-slide" id="svc1">
+    <div class="svc-glass">
+      <div class="svc-img-wrap">
+        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=600&fit=crop&crop=center" alt="Acoustic Solutions" loading="lazy" decoding="async">
+      </div>
+      <div class="svc-text">
+        <span class="svc-tag">Harmony Unleashed: The Artistry of Acoustic Mastery</span>
+        <h2 class="svc-title">Acoustic<br>Solutions</h2>
+        <p class="svc-desc">Our objective is to offer a neutral acoustic setting, guaranteeing a pristine audio experience. Listeners enjoy films and music with utmost clarity — free from room acoustics, system noise, or neighbouring disturbances.</p>
+      </div>
+    </div>
+    <div class="svc-num">02</div>
+  </div>
+
+  <!-- CARD 3: Home Theater -->
+  <div class="svc-slide" id="svc2">
+    <div class="svc-glass">
+      <div class="svc-text">
+        <span class="svc-tag">Embrace Cinematic Excellence</span>
+        <h2 class="svc-title">Home<br>Theater</h2>
+        <p class="svc-desc">Experience a new dimension of entertainment with our exclusive Home Cinema. From conception to creation, our team crafts a personalised cinematic escape — elevating your senses and rediscovering the magic of movies and music.</p>
+      </div>
+      <div class="svc-img-wrap">
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600&h=600&fit=crop&crop=center" alt="Home Theater" loading="lazy" decoding="async">
+      </div>
+    </div>
+    <div class="svc-num">03</div>
+  </div>
+
+  <!-- CARD 4: Hi-Fi Stereo -->
+  <div class="svc-slide" id="svc3">
+    <div class="svc-glass">
+      <div class="svc-img-wrap">
+        <img src="https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&h=600&fit=crop&crop=center" alt="Hi-Fi Stereo" loading="lazy" decoding="async">
+      </div>
+      <div class="svc-text">
+        <span class="svc-tag">Elevate Your Listening Experience</span>
+        <h2 class="svc-title">Hi-Fi<br>Stereo</h2>
+        <p class="svc-desc">Experience the epitome of audio luxury with our handpicked Hi-Fi Systems collection — where cutting-edge technology meets timeless elegance, delivering flawless sound and unmatched performance that transcends its price point.</p>
+      </div>
+    </div>
+    <div class="svc-num">04</div>
+  </div>
+
+  <!-- Progress dots -->
+  <div id="svcDots">
+    <div class="sdot"></div>
+    <div class="sdot"></div>
+    <div class="sdot"></div>
+    <div class="sdot"></div>
+  </div>
+
+  <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
+  <div class="wm" style="left:0;width:220px;background:linear-gradient(to right,rgba(0,0,0,.92) 60%,transparent)"></div>
+</div>
+
+<!-- TRENDING PRODUCTS — SPLIT LAYOUT + GALAXY -->
+<section id="trending">
+  <!-- galaxy background video -->
+  <video id="galaxy-video" autoplay loop muted playsinline preload="auto">
+    <source src="galaxy-bg.mp4" type="video/mp4">
+  </video>
+
+  <!-- LEFT: heading + info -->
+  <div class="tr-left">
+    <p class="tr-tag">Handpicked For You</p>
+    <h2 class="tr-title">Trending<br>Products</h2>
+    <p class="tr-desc">Explore our curated selection of award-winning hi-fi audio equipment — handpicked by our experts for unmatched sound performance and build quality.</p>
+    <div class="tr-stats">
+      <div><div class="tr-stat-num">6+</div><div class="tr-stat-lbl">Products</div></div>
+      <div><div class="tr-stat-num">12</div><div class="tr-stat-lbl">Awards</div></div>
+      <div><div class="tr-stat-num">100%</div><div class="tr-stat-lbl">Curated</div></div>
+    </div>
+  </div>
+
+  <!-- RIGHT: orbital -->
+  <div class="tr-right">
+    <div id="orb-stage">
+      <div id="orb-ring"></div>
+      <div id="orb-center"><div class="orb-core"></div></div>
+      <!-- nodes injected by JS -->
+    </div>
+  </div>
+
+  <div id="orb-hint">Click a product · Click background to dismiss</div>
+</section>
+
+<!-- FOOTER — appears naturally after last card scroll -->
+<footer id="footer" role="contentinfo">
+  <div class="footer-top">
+
+    <!-- Brand -->
+    <div class="footer-brand">
+      <img class="logo-img" src="logo.jpg" alt="The Audio Project">
+      <p>At The Audio Project, we believe great sound transforms lives. We curate and install world-class audio-visual experiences tailored precisely to you.</p>
+    </div>
+
+    <!-- Services -->
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#" class="dd-link" data-svc="0">Corporate AV</a></li>
+        <li><a href="#" class="dd-link" data-svc="1">Acoustic Solutions</a></li>
+        <li><a href="#" class="dd-link" data-svc="2">Home Theater</a></li>
+        <li><a href="#" class="dd-link" data-svc="3">Hi-Fi Stereo</a></li>
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-col footer-contact">
+      <h4>Contact Us</h4>
+      <p><span class="icon">📍</span>The Audio Project, Kochi, Kerala, India</p>
+      <p><span class="icon">📞</span>+91 98765 43210</p>
+      <p><span class="icon">✉️</span>hello@theaudioproject.in</p>
+      <p><span class="icon">🕐</span>Mon – Sat: 10:00 AM – 7:00 PM</p>
+    </div>
+
+  </div>
+
+  <div class="footer-divider"></div>
+  <div class="footer-bottom">
+    <p>© 2026 The Audio Project. All rights reserved.</p>
+    <p><a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a></p>
+  </div>
+</footer>
+
+<script nonce="TAP2026">
+gsap.registerPlugin(ScrollTrigger);
+
+/* Preloader handled in its own script tag above — independent of GSAP */
+
+/* ══════════════════════════════════════
+   SCROLL PROGRESS BAR
+══════════════════════════════════════ */
+(function(){
+  const bar = document.getElementById('scrollBar');
+  function updateBar(){
+    const scrolled = window.scrollY;
+    const total    = document.documentElement.scrollHeight - window.innerHeight;
+    const pct      = total > 0 ? (scrolled / total) * 100 : 0;
+    bar.style.width = pct + '%';
+    bar.setAttribute('aria-valuenow', Math.round(pct));
+  }
+  window.addEventListener('scroll', updateBar, { passive:true });
+  updateBar();
+})();
+
+/* ══════════════════════════════════════
+   COOKIE CONSENT
+══════════════════════════════════════ */
+(function(){
+  const banner  = document.getElementById('cookieBanner');
+  const accept  = document.getElementById('ckAccept');
+  const reject  = document.getElementById('ckReject');
+  const KEY     = 'tap_cookie_consent';
+
+  /* Already decided — stay hidden (display:none default), nothing to do */
+  if(localStorage.getItem(KEY)) return;
+
+  /* New visitor: show after preloader fades */
+  setTimeout(() => { banner.style.display = 'flex'; }, 3200);
+
+  function savePref(val){
+    localStorage.setItem(KEY, val);
+    banner.classList.add('hidden');
+    setTimeout(() => { banner.style.display = 'none'; }, 550);
+  }
+
+  accept.addEventListener('click', () => savePref('all'));
+  reject.addEventListener('click', () => savePref('essential'));
+
+  /* Keyboard: Escape = essential only */
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && !banner.classList.contains('hidden')) savePref('essential');
+  });
+})();
+
+const vw    = window.innerWidth;
+const exitX = vw + 500;
+const vid2  = document.getElementById('vid2');
+
+/* ── 1. PRIME VIDEO ─────────────────────────── */
+const bgVideo = document.getElementById('bgVideo');
+
+/* Force muted via JS too — required by iOS Safari */
+bgVideo.muted = true;
+vid2.muted    = true;
+
+/* Prime the scrub video (no autoplay attr on vid2) */
+vid2.load();
+vid2.addEventListener('loadedmetadata', () => {
+  vid2.currentTime = 6.5;
+  vid2.play().then(() => { vid2.pause(); vid2.currentTime = 6.5; }).catch(() => { vid2.currentTime = 6.5; });
+}, { once: true });
+
+/* Fallback: if hero video fails, show a dark gradient instead of black */
+bgVideo.addEventListener('error', () => {
+  document.getElementById('s1').style.background =
+    'linear-gradient(160deg,#0a0a0f 0%,#1a0a12 40%,#0a0a0f 100%)';
+}, { once: true });
+
+/* Mobile autoplay unlock — retries on every touch until video plays.
+   No once:true — keeps trying if video isn't buffered yet on first tap. */
+function unlockBgVideo(){
+  if(!bgVideo.paused){
+    document.removeEventListener('touchstart', unlockBgVideo);
+    return;
+  }
+  bgVideo.load();
+  bgVideo.play().then(() => {
+    document.removeEventListener('touchstart', unlockBgVideo);
+  }).catch(() => { /* keep listener, retry on next touch */ });
+}
+document.addEventListener('touchstart', unlockBgVideo, { passive:true });
+/* Also try once the page is fully loaded */
+window.addEventListener('load', () => {
+  if(bgVideo.paused) bgVideo.play().catch(()=>{});
+}, { once:true });
+
+
+/* ── 2. ENTRANCE ────────────────────────────── */
+gsap.set('#spkL', { x: -(vw + 400) });
+gsap.set('#spkR', { x:  (vw + 400) });
+
+gsap.timeline({ delay: 0.15 })
+  .to('#spkL',            { x:0, duration:.85, ease:'power2.out' }, 0)
+  .to('#spkR',            { x:0, duration:.85, ease:'power2.out' }, 0)
+  .to('#topNav',          { y:0, duration:.35, ease:'power2.out' }, 0.80)
+  .to(['#impL','#impR'],  { opacity:.85, scale:3,   duration:.12, ease:'power2.out' }, 0.82)
+  .to(['#impL','#impR'],  { opacity:0,   scale:6.5, duration:.18, ease:'power2.in'  }, 0.94)
+  .to(['#glowL','#glowR'],{ opacity:1,   duration:.22, ease:'power1.out' }, 0.84)
+  .to('#fog',             { opacity:1,   duration:.55, ease:'power1.out' }, 0.90)
+  .to('#htDivider',       { opacity:1, scaleX:1, duration:.28, ease:'power2.out' }, 1.10)
+  .to('#heroText',        { opacity:1, y:0,      duration:.45, ease:'power2.out' }, 1.18);
+
+
+/* ── 3. HERO → S2 TRANSITION: "Atmosphere Descent" ─────────────────
+   Feeling: you descend through the fog into the aerial footage below.
+   No hard black cut — a fog-light overexposure bridges both sections.
+────────────────────────────────────────────────────────────────── */
+gsap.timeline({
+  scrollTrigger:{ trigger:'#s1', start:'top top', end:'bottom top', scrub:1.2 }
+})
+/* ① Hero video zooms in slowly — simulates downward motion into the fog */
+.to('#bgVideo', {
+  scale:1.13, y:'-5%', ease:'none'
+}, 0)
+
+/* ② Text drifts upward and dissolves with depth-of-field blur */
+.to('#heroText', {
+  y:'-52px', opacity:0,
+  filter:'blur(5px)',
+  ease:'power1.in',
+  duration:0.50
+}, 0)
+
+/* ③ CSS fog layer swells up — fog rises to engulf the frame */
+.to('#fog', {
+  scaleY:1.8, y:'-8%', opacity:1,
+  transformOrigin:'50% 100%',
+  ease:'power1.in',
+  duration:0.65
+}, 0.15)
+
+/* ④ Vignette darkens at edges (atmosphere thickens) */
+.to('.vig', {
+  opacity:1.0,
+  ease:'power2.in',
+  duration:0.55
+}, 0.20)
+
+/* ⑤ Fog-light flare — brief luminous glow at the "breaking through" moment */
+.to('#s1-flare', {
+  opacity:1, ease:'power2.out', duration:0.12
+}, 0.55)
+.to('#s1-flare', {
+  opacity:0, ease:'power2.in', duration:0.18
+}, 0.67)
+
+/* ⑥ Deep fog curtain fades in only at the very end — no premature blackout */
+.to('#curtain', {
+  opacity:0.96, ease:'power3.in', duration:0.28
+}, 0.72);
+
+
+/* ── 4. S2 ENTRY — scale-in from slightly enlarged, like landing in fog ── */
+gsap.from('#vid2', {
+  scale:1.07, ease:'power2.out',
+  scrollTrigger:{ trigger:'#s2', start:'top bottom', end:'top top', scrub:1 }
+});
+
+
+
+
+/* ── 6. VIDEO SCRUB RAF ─────────────────────── */
+let targetVideoTime = 6.5;
+let lastSeekStamp   = 0;
+function videoSeekLoop(ts) {
+  requestAnimationFrame(videoSeekLoop);
+  if (!vid2.duration) return;
+  if (ts - lastSeekStamp < 16) return;   /* 60fps — was 42ms (24fps) */
+  lastSeekStamp = ts;
+  const diff = targetVideoTime - vid2.currentTime;
+  if (Math.abs(diff) < 0.01) return;
+  vid2.currentTime += diff * 0.55;       /* faster catch-up — was 0.35 */
+}
+requestAnimationFrame(videoSeekLoop);
+
+
+/* ── 6. PIN S2 + SPEAKERS + VIDEO + CARDS ──────
+   Progress zones:
+   0.00 – 0.15 → speakers exit
+   0.15 – 0.35 → card 1 (Corporate AV)
+   0.35 – 0.55 → card 2 (Acoustic)
+   0.55 – 0.75 → card 3 (Home Theater)
+   0.75 – 1.00 → card 4 (Hi-Fi Stereo)            */
+
+const slides = document.querySelectorAll('.svc-slide');
+const dots   = document.querySelectorAll('.sdot');
+const N      = slides.length;
+
+const zones = [
+  [0.15, 0.35],
+  [0.35, 0.55],
+  [0.55, 0.75],
+  [0.75, 1.00],
+];
+/* midpoints used for dropdown jump */
+const zoneMids = zones.map(([s,e]) => (s + e) / 2);
+
+gsap.set(slides, { opacity:0, y:50 });
+
+let shownCard = -1;
+
+function showCard(p) {
+  zones.forEach(([s, e], i) => {
+    const inZone = p >= s && p < e;
+    if (inZone && shownCard !== i) {
+      if (shownCard >= 0) {
+        gsap.killTweensOf(slides[shownCard]);
+        gsap.to(slides[shownCard], { opacity:0, y:-30, duration:0.22, ease:'power2.in' });
+        dots[shownCard].classList.remove('active');
+      }
+      gsap.killTweensOf(slides[i]);
+      gsap.to(slides[i], { opacity:1, y:0, duration:0.30, ease:'power2.out' });
+      dots[i].classList.add('active');
+      shownCard = i;
+    }
+    if (p >= e && shownCard === i) {
+      gsap.killTweensOf(slides[i]);
+      gsap.to(slides[i], { opacity:0, y:-30, duration:0.22, ease:'power2.in' });
+      dots[i].classList.remove('active');
+      shownCard = -1;
+    }
+  });
+  if (p < zones[0][0] && shownCard >= 0) {
+    gsap.killTweensOf(slides[shownCard]);
+    gsap.to(slides[shownCard], { opacity:0, y:30, duration:0.20, ease:'power2.in' });
+    dots[shownCard].classList.remove('active');
+    shownCard = -1;
+  }
+}
+
+let s2ST = ScrollTrigger.create({
+  trigger:    '#s2',
+  start:      'top top',
+  end:        '+=700%',
+  pin:        true,
+  pinSpacing: true,
+  scrub:      0.4,           /* tight follow — was 1, feels faster and more direct */
+  onUpdate(self) {
+    const p  = self.progress;
+    const sp = Math.min(1, p / 0.15);
+    gsap.set('#spkL', { x: -exitX * sp });
+    gsap.set('#spkR', { x:  exitX * sp });
+    /* video seek uses smoothed progress — stays buttery */
+    if (vid2.duration) targetVideoTime = 6.5 + p * (vid2.duration - 6.5);
+  },
+  onRefresh() {
+    document.querySelectorAll('.pin-spacer')
+      .forEach(el => { el.style.background='#000'; el.style.padding='0'; });
+  }
+});
+
+/* Separate NON-scrubbed trigger for instant card + dot transitions.
+   Raw scroll progress → cards appear the moment you reach each zone. */
+ScrollTrigger.create({
+  trigger:    '#s2',
+  start:      'top top',
+  end:        '+=700%',
+  onUpdate(self) {
+    const p       = self.progress;
+    const svcDots = document.getElementById('svcDots');
+    if(svcDots) svcDots.style.opacity = p >= 0.15 ? '1' : '0';
+    showCard(p);
+  }
+});
+
+
+/* Speaker is position:absolute inside #s1 — no JS needed, scrolls away naturally */
+
+/* ── 8. DROPDOWN + FOOTER LINKS — scroll to card ── */
+function jumpToCard(idx) {
+  /* Calculate exact scroll position for the card's zone midpoint */
+  ScrollTrigger.refresh();
+  const scrollStart = s2ST.start;
+  const scrollEnd   = s2ST.end;
+  const target = scrollStart + zoneMids[idx] * (scrollEnd - scrollStart);
+  window.scrollTo({ top: target, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.dd-link').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const idx = parseInt(a.dataset.svc, 10);
+    if (!isNaN(idx) && idx >= 0 && idx < zones.length) jumpToCard(idx);
+  });
+});
+
+const navSvcEl = document.getElementById('navSvc');
+navSvcEl.addEventListener('click', e => {
+  e.preventDefault();
+  jumpToCard(0);
+});
+/* aria-expanded: reflect dropdown open/close state */
+navSvcEl.closest('.nav-dropdown').addEventListener('mouseenter', () => navSvcEl.setAttribute('aria-expanded','true'));
+navSvcEl.closest('.nav-dropdown').addEventListener('mouseleave', () => navSvcEl.setAttribute('aria-expanded','false'));
+
+
+/* ── 8. NAV ─────────────────────────────────── */
+document.getElementById('navHome').addEventListener('click', e => {
+  e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' });
+});
+document.getElementById('navContact').addEventListener('click', e => {
+  e.preventDefault();
+  document.getElementById('footer').scrollIntoView({ behavior:'smooth' });
+});
+
+
+/* Galaxy background video — no JS needed, handled by HTML autoplay */
+
+/* ══════════════════════════════════════
+   ORBITAL PRODUCT TIMELINE
+══════════════════════════════════════ */
+(function(){
+  const PRODUCTS = [
+    {
+      id:1, title:'LUMIN D3', category:'Network Streamer / DAC',
+      award:'Outstanding Product', awardType:'done',
+      desc:'Award-winning network music player with audiophile-grade DAC. "Go buy an audition — and take your credit card along."',
+      img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=300&fit=crop',
+      icon:'♪', energy:95, relatedIds:[2,3]
+    },
+    {
+      id:2, title:'Borresen X3', category:'Floorstanding Speaker',
+      award:'hi-fi+ Winner 2023', awardType:'done',
+      desc:'Represent excellent value both in terms of sound and build quality. Best Floorstanding Loudspeaker of the year.',
+      img:'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&h=300&fit=crop',
+      icon:'◈', energy:90, relatedIds:[1,5]
+    },
+    {
+      id:3, title:'Reference Amp', category:'Integrated Amplifier',
+      award:'Best Amplifier', awardType:'done',
+      desc:'Multiple top industry certifications. Highly acclaimed reference-class integrated amplifier for discerning listeners.',
+      img:'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500&h=300&fit=crop',
+      icon:'⚡', energy:85, relatedIds:[1,4]
+    },
+    {
+      id:4, title:'AV Receiver', category:'Multi-Channel Receiver',
+      award:'EISA Best Product', awardType:'prog',
+      desc:'No other multichannel integrated amplifier can match it. EISA Best Product award for outstanding performance.',
+      img:'https://images.unsplash.com/photo-1612444530582-fc66183b16f7?w=500&h=300&fit=crop',
+      icon:'▦', energy:82, relatedIds:[3,6]
+    },
+    {
+      id:5, title:'Dynaudio', category:'Floorstanding Speaker',
+      award:'EISA Best Product', awardType:'prog',
+      desc:'EISA Best Product award-winning speaker delivering exceptional clarity, dynamics, and musical engagement.',
+      img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&h=300&fit=crop',
+      icon:'◉', energy:88, relatedIds:[2,6]
+    },
+    {
+      id:6, title:'S/812 Sub', category:'Powered Subwoofer',
+      award:'Award Winning Sound', awardType:'done',
+      desc:'Highly commended by multiple leading publications. Deep, precise bass that transforms any listening room.',
+      img:'https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=500&h=300&fit=crop',
+      icon:'◎', energy:78, relatedIds:[4,5]
+    },
+  ];
+
+  const stage      = document.getElementById('orb-stage');
+  const N          = PRODUCTS.length;
+  let rotAngle     = 0;
+  let autoRotate   = true;
+  let activeId     = null;
+  let lastTs       = 0;
+  const nodeEls    = {};
+  const dotEls     = {};
+
+  /* ── radius: responsive ── */
+  function radius(){
+    return window.innerWidth <= 480 ? 90
+         : window.innerWidth <= 900 ? 120
+         : 160;
+  }
+
+  /* ── Build nodes ── */
+  PRODUCTS.forEach((p, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'orb-node';
+    wrap.id = `onode-${p.id}`;
+
+    /* halo */
+    const halo = document.createElement('div');
+    halo.className = 'orb-halo';
+    const haloSize = p.energy * 0.4 + 40;
+    halo.style.cssText = `width:${haloSize}px;height:${haloSize}px;margin-left:${-(haloSize-42)/2}px;margin-top:${-(haloSize-42)/2}px;`;
+
+    /* dot */
+    const dot = document.createElement('div');
+    dot.className = 'orb-dot';
+    dot.textContent = p.icon;
+
+    /* label */
+    const lbl = document.createElement('div');
+    lbl.className = 'orb-label';
+    lbl.textContent = p.title;
+
+    wrap.appendChild(halo);
+    wrap.appendChild(dot);
+    wrap.appendChild(lbl);
+    stage.appendChild(wrap);
+
+    nodeEls[p.id] = wrap;
+    dotEls[p.id]  = dot;
+
+    wrap.addEventListener('click', e => { e.stopPropagation(); toggleNode(p.id); });
+  });
+
+  /* ── Position update ── */
+  function updatePositions(){
+    PRODUCTS.forEach((p, i) => {
+      const angle   = ((i / N) * 360 + rotAngle) % 360;
+      const rad     = (angle * Math.PI) / 180;
+      const r       = radius();
+      const x       = r * Math.cos(rad);
+      const y       = r * Math.sin(rad);
+      const zIdx    = Math.round(100 + 50 * Math.cos(rad));
+      const opacity = activeId ? (activeId === p.id ? 1 : 0.35) : Math.max(0.4, 0.4 + 0.6 * ((1 + Math.sin(rad)) / 2));
+
+      const el = nodeEls[p.id];
+      el.style.transform  = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      el.style.zIndex     = activeId === p.id ? 200 : zIdx;
+      el.style.opacity    = opacity;
+    });
+  }
+
+  /* ── Toggle card ── */
+  function toggleNode(id){
+    if(activeId === id){
+      closeCard();
+      return;
+    }
+    closeCard();
+    activeId    = id;
+    autoRotate  = false;
+
+    nodeEls[id].classList.add('active');
+
+    /* highlight related */
+    const product = PRODUCTS.find(p => p.id === id);
+    product.relatedIds.forEach(rid => {
+      if(nodeEls[rid]) nodeEls[rid].classList.add('related');
+    });
+
+    /* show card */
+    showCard(id);
+  }
+
+  function closeCard(){
+    if(activeId !== null){
+      nodeEls[activeId].classList.remove('active');
+      const prev = PRODUCTS.find(p => p.id === activeId);
+      prev.relatedIds.forEach(rid => { if(nodeEls[rid]) nodeEls[rid].classList.remove('related'); });
+    }
+    const existing = document.getElementById('orb-popup');
+    if(existing) existing.remove();
+    activeId   = null;
+    autoRotate = true;
+  }
+
+  function showCard(id){
+    const p   = PRODUCTS.find(pr => pr.id === id);
+    const nEl = nodeEls[id];
+    const rect = nEl.getBoundingClientRect();
+
+    const card = document.createElement('div');
+    card.className = 'orb-card';
+    card.id = 'orb-popup';
+
+    /* Build card safely via DOM — no innerHTML with data values (XSS prevention) */
+    const img = document.createElement('img');
+    img.className = 'orb-card-img';
+    img.src = p.img; img.alt = p.title;
+
+    const award = document.createElement('div');
+    award.className = `orb-card-award ${p.awardType}`;
+    award.textContent = '★ ' + p.award;
+
+    const titleEl = document.createElement('div');
+    titleEl.className = 'orb-card-title';
+    titleEl.textContent = p.title;
+
+    const cat = document.createElement('div');
+    cat.className = 'orb-card-cat';
+    cat.textContent = p.category;
+
+    const desc = document.createElement('div');
+    desc.className = 'orb-card-desc';
+    desc.textContent = p.desc;
+
+    const energyRow = document.createElement('div');
+    energyRow.className = 'orb-card-energy-row';
+    const eL = document.createElement('span'); eL.textContent = '⚡ Energy Level';
+    const eR = document.createElement('span'); eR.textContent = p.energy + '%';
+    energyRow.appendChild(eL); energyRow.appendChild(eR);
+
+    const bar = document.createElement('div'); bar.className = 'orb-card-bar';
+    const fill = document.createElement('div'); fill.className = 'orb-card-fill';
+    fill.style.width = Math.min(100, Math.max(0, p.energy)) + '%';
+    bar.appendChild(fill);
+
+    [img, award, titleEl, cat, desc, energyRow, bar].forEach(el => card.appendChild(el));
+
+    /* Position card using viewport coords (card is position:fixed) */
+    let top  = rect.bottom + 12;
+    let left = rect.left - 95;
+
+    /* clamp to viewport */
+    if(left < 10) left = 10;
+    if(left + 260 > window.innerWidth - 10) left = window.innerWidth - 270;
+    if(top + 360 > window.innerHeight - 10) top = rect.top - 365;
+    if(top < 10) top = 10;
+
+    card.style.top  = top  + 'px';
+    card.style.left = left + 'px';
+
+    card.addEventListener('click', e => e.stopPropagation());
+    document.body.appendChild(card);
+  }
+
+  /* ── Close on background click ── */
+  document.getElementById('trending').addEventListener('click', closeCard);
+
+  /* ── RAF animation loop ── */
+  function animate(ts){
+    requestAnimationFrame(animate);
+    if(autoRotate && ts - lastTs > 50){
+      rotAngle  = (rotAngle + 0.3) % 360;
+      lastTs    = ts;
+    }
+    updatePositions();
+  }
+  requestAnimationFrame(animate);
+
+  /* ── Scroll reveal entrance ── */
+  gsap.set('#trending .tr-top', { opacity:0, y:30 });
+  gsap.set('.orb-node', { opacity:0, scale:0 });
+  ScrollTrigger.create({
+    trigger:'#trending', start:'top 75%', once:true,
+    onEnter(){
+      gsap.to('#trending .tr-top',{ opacity:1, y:0, duration:.6, ease:'power2.out' });
+      gsap.to('.orb-node',{ opacity:1, scale:1, duration:.5, ease:'back.out(1.4)', stagger:.1, delay:.3 });
+    }
+  });
+})();
+
+/* ── 10. MOUSE PARALLAX (desktop only) ──────── */
+document.addEventListener('mousemove', e => {
+  if (window.innerWidth <= 768) return;
+  const dx = (e.clientX - innerWidth  / 2) / innerWidth;
+  const dy = (e.clientY - innerHeight / 2) / innerHeight;
+  gsap.to('#bgVideo', { x:dx*-16, y:`calc(-8% + ${dy*-10}px)`, duration:2.5, ease:'power1.out' });
+});
+
+
+/* ── 10. MOBILE NAV ─────────────────────────── */
+const hamburger    = document.getElementById('hamburger');
+const mobileNav    = document.getElementById('mobileNav');
+const mSvcToggle   = document.getElementById('mNavSvcToggle');
+const mSvcList     = document.getElementById('mNavSvcList');
+
+/* Show mobile nav as flex when open */
+mobileNav.style.display = 'flex';
+
+function closeMobileNav() {
+  hamburger.classList.remove('open');
+  mobileNav.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+hamburger.addEventListener('click', () => {
+  const isOpen = hamburger.classList.toggle('open');
+  mobileNav.classList.toggle('open', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+
+/* Services sub-accordion */
+mSvcToggle.addEventListener('click', () => {
+  mSvcToggle.classList.toggle('open');
+  mSvcList.classList.toggle('open');
+});
+
+/* Mobile nav links */
+document.getElementById('mNavHome').addEventListener('click', e => {
+  e.preventDefault(); closeMobileNav();
+  window.scrollTo({ top:0, behavior:'smooth' });
+});
+document.getElementById('mNavContact').addEventListener('click', e => {
+  e.preventDefault(); closeMobileNav();
+  document.getElementById('footer').scrollIntoView({ behavior:'smooth' });
+});
+
+/* Mobile service items — reuse jumpToCard */
+mSvcList.querySelectorAll('.dd-link').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault(); closeMobileNav();
+    const mIdx = parseInt(a.dataset.svc, 10);
+    if(!isNaN(mIdx) && mIdx >= 0 && mIdx < zones.length) setTimeout(() => jumpToCard(mIdx), 400);
+  });
+});
+</script>
+</body>
+</html>
