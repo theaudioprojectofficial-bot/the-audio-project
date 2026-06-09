@@ -127,7 +127,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   text-align:left;
   padding-left:clamp(28px,6vw,80px);
   padding-right:clamp(16px,2.5vw,36px);
-  opacity:0;transform:translateX(-22px);
+  opacity:1;transform:translateX(0);
   will-change:transform,opacity;
 }
 .ht-tag{
@@ -1096,11 +1096,11 @@ function pToTime(p){
 }
 
 /* ── Entrance animation ── */
-gsap.set('#topNav', { y: -100 });
-gsap.timeline({ delay: 0.20 })
-  .to('#topNav',   { y:0,      duration:.35, ease:'power2.out' }, 0)
-  .to('#heroText', { opacity:1, x:0, duration:.60, ease:'power2.out' }, 0.28)
-  .to('#htDivider',{ opacity:1, scaleX:1, duration:.30, ease:'power2.out' }, 0.68);
+gsap.set('#topNav',    { y: -100 });
+gsap.set('#htDivider', { opacity:0, scaleX:0 });
+gsap.timeline({ delay: 0.15 })
+  .to('#topNav',    { y:0,      duration:.35, ease:'power2.out' }, 0)
+  .to('#htDivider', { opacity:1, scaleX:1, duration:.30, ease:'power2.out' }, 0.45);
 
 /* ── Quick setters for per-frame updates ── */
 const qHero     = gsap.quickSetter('#heroLeft',  'opacity');
