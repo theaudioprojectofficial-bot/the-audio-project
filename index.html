@@ -20,12 +20,12 @@
      per request, OR replace with hash-based CSP for true security. -->
 <meta http-equiv="Content-Security-Policy"
   content="default-src 'self';
-           script-src 'self' https://cdnjs.cloudflare.com 'nonce-TAP2026';
+           script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'nonce-TAP2026';
            style-src 'self' 'unsafe-inline';
            img-src 'self' https://images.unsplash.com data: blob:;
            media-src 'self' blob:;
-           font-src 'self';
-           connect-src 'none';
+           font-src 'self' https://cdn.jsdelivr.net;
+           connect-src 'self' https://cdn.jsdelivr.net;
            frame-ancestors 'none';
            base-uri 'self';
            form-action 'self';">
@@ -886,7 +886,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 <!-- SECTION 1 — HERO -->
 <section id="s1" role="main" aria-label="Hero">
   <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
-    <source src="hero-bg.mp4" type="video/mp4">
+    <source src="hero-final.mp4" type="video/mp4">
   </video>
   <div class="vig"></div>
   <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
@@ -908,10 +908,10 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   <div id="curtain"></div>
 </section>
 
-<!-- SECTION 2 — AERIAL FOG VIDEO + SERVICE CARDS -->
+<!-- SECTION 2 — VIDEO + SERVICE CARDS -->
 <div id="s2">
   <video id="vid2" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
-    <source src="fog_seekable.mp4" type="video/mp4">
+    <source src="s2-video.mp4" type="video/mp4">
   </video>
   <div class="vig2"></div>
 
@@ -1110,16 +1110,16 @@ gsap.registerPlugin(ScrollTrigger);
 
 const vw    = window.innerWidth;
 const exitX = vw + 500;
-const vid2  = document.getElementById('vid2');
 
 /* ── 1. PRIME VIDEO ─────────────────────────── */
 const bgVideo = document.getElementById('bgVideo');
+const vid2    = document.getElementById('vid2');
 
 /* Force muted via JS too — required by iOS Safari */
 bgVideo.muted = true;
 vid2.muted    = true;
 
-/* Prime the scrub video (no autoplay attr on vid2) */
+/* Prime the scrub video so first seek is instant */
 vid2.load();
 vid2.addEventListener('loadedmetadata', () => {
   vid2.currentTime = 6.5;
@@ -1216,11 +1216,6 @@ gsap.timeline({
 }, 0.72);
 
 
-/* ── 4. S2 ENTRY — scale-in from slightly enlarged, like landing in fog ── */
-gsap.from('#vid2', {
-  scale:1.07, ease:'power2.out',
-  scrollTrigger:{ trigger:'#s2', start:'top bottom', end:'top top', scrub:1 }
-});
 
 
 
@@ -1231,11 +1226,11 @@ let lastSeekStamp   = 0;
 function videoSeekLoop(ts) {
   requestAnimationFrame(videoSeekLoop);
   if (!vid2.duration) return;
-  if (ts - lastSeekStamp < 16) return;   /* 60fps — was 42ms (24fps) */
+  if (ts - lastSeekStamp < 16) return;
   lastSeekStamp = ts;
   const diff = targetVideoTime - vid2.currentTime;
   if (Math.abs(diff) < 0.01) return;
-  vid2.currentTime += diff * 0.55;       /* faster catch-up — was 0.35 */
+  vid2.currentTime += diff * 0.55;
 }
 requestAnimationFrame(videoSeekLoop);
 
@@ -1306,7 +1301,6 @@ let s2ST = ScrollTrigger.create({
     const sp = Math.min(1, p / 0.15);
     gsap.set('#spkL', { x: -exitX * sp });
     gsap.set('#spkR', { x:  exitX * sp });
-    /* video seek uses smoothed progress — stays buttery */
     if (vid2.duration) targetVideoTime = 6.5 + p * (vid2.duration - 6.5);
   },
   onRefresh() {
