@@ -1129,7 +1129,7 @@ const cardZones = [
 const zoneMids = cardZones.map(([s,e]) => (s+e)/2);
 
 function showCard(p){
-  cardZones.forEach(([s, e], i){
+  cardZones.forEach(([s, e], i) => {
     const isLast  = i === cardZones.length - 1;
     const inZone  = p >= s && (isLast ? true : p < e);
     if(inZone && shownCard !== i){
