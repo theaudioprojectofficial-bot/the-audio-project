@@ -247,9 +247,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   background:rgba(255,255,255,.25);transition:background .3s,transform .3s;}
 .sdot.active{background:#00d4ff;transform:scale(1.4);}
 
-/* Watermark masks */
-.wm{position:absolute;bottom:0;height:80px;z-index:15;pointer-events:none;}
-.wm-blot{display:none;}
 
 /* ══════════════════════════════════════
    MOBILE SPEAKER (inside #s1, scrolls away with section)
@@ -862,8 +859,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     </div>
   </div>
 
-  <!-- Subtle glowing line between left text and right video -->
-  <div id="vidEdge"></div>
 
   <!-- Phase 2: "Our Services" heading (appears over white video flash at ~7s) -->
   <div id="svcTitle">
@@ -947,9 +942,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     <div class="spk-mob-glow"></div>
   </div>
 
-  <!-- Side watermark masks -->
-  <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
-  <div class="wm" style="left:0;width:220px;background:linear-gradient(to right,rgba(0,0,0,.92) 60%,transparent)"></div>
 </section>
 
 <!-- TRENDING PRODUCTS — SPLIT LAYOUT + GALAXY -->
@@ -1103,7 +1095,6 @@ gsap.timeline({ delay: 0.15 })
 
 /* ── Quick setters for per-frame updates ── */
 const qHero     = gsap.quickSetter('#heroLeft',  'opacity');
-const qEdge     = gsap.quickSetter('#vidEdge',   'opacity');
 const qSvcTitle = gsap.quickSetter('#svcTitle',  'opacity');
 const qSvcVig   = gsap.quickSetter('#svcVig',    'opacity');
 
@@ -1177,7 +1168,6 @@ const mainST = ScrollTrigger.create({
         ? 0
         : 1 - (p - 0.37) / 0.08;
     qHero(heroOp);
-    qEdge(heroOp);  /* separator fades with panel */
 
     /* ── Phase 2: "Our Services" heading (0.42 → 0.56) ── */
     let svcTOp = 0;
