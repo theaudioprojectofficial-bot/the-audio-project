@@ -93,9 +93,9 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 /* ══════════════════════════════════════
    SECTION 1 — SPLIT HERO + FULL SCROLL EXPERIENCE
    Video scrubs 0→10s while pinned.
-   Phase 1 (0–55%): split view  — text left, home-theater video right
-   Phase 2 (55–70%): "Our Services" heading over white video flash
-   Phase 3 (70–100%): service cards with video as dark background
+   Phase 1 (0–42%):  split view  — text left, home-theater video right (~7.5 screens)
+   Phase 2 (42–56%): "Our Services" heading over white video flash (~2.5 screens)
+   Phase 3 (56–100%): service cards with video as dark background (~2 screens each)
 ══════════════════════════════════════ */
 #s1{position:relative;height:100vh;overflow:hidden;background:#000;}
 
@@ -837,10 +837,10 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     SECTION 1 — SINGLE PINNED SCROLL EXPERIENCE
-     Phase 1 (0–55% scroll): Split layout — text left, video right
-     Phase 2 (55–70% scroll): "Our Services" heading on white flash
-     Phase 3 (70–100% scroll): Service cards over video background
+     SECTION 1 — SINGLE PINNED SCROLL EXPERIENCE (1800% height)
+     Phase 1 (0–42% scroll): Split layout — text left, video right
+     Phase 2 (42–56% scroll): "Our Services" heading on white flash
+     Phase 3 (56–100% scroll): Service cards over video background
 ═══════════════════════════════════════════════════════════════ -->
 <section id="s1" role="main" aria-label="Hero and Services">
 
@@ -1054,9 +1054,9 @@ gsap.registerPlugin(ScrollTrigger);
    Single video, scrubbed 0→10s across entire pinned section.
 
    Scroll progress → video time mapping (non-linear):
-     0.00–0.55  →  video 0–7s   (hero split view, 6 screen-heights)
-     0.55–0.70  →  video 7–8s   ("Our Services" heading, 1.5 screen-heights)
-     0.70–1.00  →  video 8–10s  (4 service cards, 3 screen-heights)
+     0.00–0.42  →  video 0–7s   (hero split view, ~7.5 screen-heights)
+     0.42–0.56  →  video 7–8s   ("Our Services" heading, ~2.5 screen-heights)
+     0.56–1.00  →  video 8–10s  (4 service cards, ~2 screens each)
 ══════════════════════════════════════ */
 const mainVid = document.getElementById('mainVid');
 const VIDEO_DUR = 10; // seconds
@@ -1090,9 +1090,9 @@ requestAnimationFrame(seekLoop);
 
 /* ── Map scroll progress to video time (non-linear) ── */
 function pToTime(p){
-  if(p <= 0.55) return (p / 0.55) * 7;         // 0–7s over 55% scroll
-  if(p <= 0.70) return 7 + (p - 0.55) / 0.15;  // 7–8s over 15% (dramatic slow)
-  return 8 + ((p - 0.70) / 0.30) * 2;           // 8–10s over 30% (card reveal)
+  if(p <= 0.42) return (p / 0.42) * 7;          // 0–7s over 42%  (~7.5 screens)
+  if(p <= 0.56) return 7 + (p - 0.42) / 0.14;   // 7–8s over 14%  (~2.5 screens — Our Services)
+  return 8 + ((p - 0.56) / 0.44) * 2;           // 8–10s over 44% (~2 screens per card)
 }
 
 /* ── Entrance animation ── */
@@ -1114,17 +1114,17 @@ const dots   = document.querySelectorAll('.sdot');
 let shownCard = -1;
 
 /*
-  Card zones (progress):
-    Card 1 Corporate AV  →  0.70 – 0.775
-    Card 2 Acoustic      →  0.775 – 0.85
-    Card 3 Home Theater  →  0.85 – 0.925
-    Card 4 Hi-Fi Stereo  →  0.925 – 1.00
+  Card zones (progress) — each zone = ~2 screens at 1800% total:
+    Card 1 Corporate AV  →  0.56 – 0.67
+    Card 2 Acoustic      →  0.67 – 0.78
+    Card 3 Home Theater  →  0.78 – 0.89
+    Card 4 Hi-Fi Stereo  →  0.89 – 1.00
 */
 const cardZones = [
-  [0.700, 0.775],
-  [0.775, 0.850],
-  [0.850, 0.925],
-  [0.925, 1.000],
+  [0.560, 0.670],
+  [0.670, 0.780],
+  [0.780, 0.890],
+  [0.890, 1.000],
 ];
 const zoneMids = cardZones.map(([s,e]) => (s+e)/2);
 
@@ -1161,7 +1161,7 @@ gsap.set(slides, { opacity:0, y:50 });
 const mainST = ScrollTrigger.create({
   trigger:    '#s1',
   start:      'top top',
-  end:        '+=1200%',   /* 13 screen-heights total */
+  end:        '+=1800%',   /* 19 screen-heights total */
   pin:        true,
   pinSpacing: true,
   scrub:      0.4,
@@ -1171,31 +1171,31 @@ const mainST = ScrollTrigger.create({
     /* ── Map to video time ── */
     targetTime = pToTime(p);
 
-    /* ── Phase 1: Hero left panel (0 → 0.55+) ── */
-    const heroOp = p < 0.48
+    /* ── Phase 1: Hero left panel (fades 0.37 → 0.45) ── */
+    const heroOp = p < 0.37
       ? 1
-      : p > 0.58
+      : p > 0.45
         ? 0
-        : 1 - (p - 0.48) / 0.10;
+        : 1 - (p - 0.37) / 0.08;
     qHero(heroOp);
     qEdge(heroOp);  /* separator fades with panel */
 
-    /* ── Phase 2: "Our Services" heading (0.55 → 0.70) ── */
+    /* ── Phase 2: "Our Services" heading (0.42 → 0.56) ── */
     let svcTOp = 0;
-    if(p >= 0.55 && p <= 0.70){
-      const t = (p - 0.55) / 0.15;
-      /* fade in 0→0.35, hold 0.35→0.65, fade out 0.65→1 */
-      svcTOp = t < 0.35 ? t / 0.35 : t > 0.65 ? (1 - t) / 0.35 : 1;
+    if(p >= 0.42 && p <= 0.56){
+      const t = (p - 0.42) / 0.14;
+      /* fade in 0→0.30, hold 0.30→0.70, fade out 0.70→1 */
+      svcTOp = t < 0.30 ? t / 0.30 : t > 0.70 ? (1 - t) / 0.30 : 1;
       svcTOp = Math.max(0, Math.min(1, svcTOp));
     }
     qSvcTitle(svcTOp);
 
-    /* ── Phase 3 vignette: ramps up at card start ── */
-    const vigOp = p < 0.68 ? 0 : Math.min(1, (p - 0.68) / 0.06);
+    /* ── Phase 3 vignette: ramps up just before cards ── */
+    const vigOp = p < 0.53 ? 0 : Math.min(1, (p - 0.53) / 0.05);
     qSvcVig(vigOp);
 
     /* ── Progress dots ── */
-    document.getElementById('svcDots').style.opacity = p >= 0.70 ? '1' : '0';
+    document.getElementById('svcDots').style.opacity = p >= 0.56 ? '1' : '0';
 
     /* ── Service cards ── */
     showCard(p);
