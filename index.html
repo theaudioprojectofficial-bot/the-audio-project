@@ -9,15 +9,10 @@
 <meta property="og:description" content="Premium Hi-Fi Audio experiences tailored precisely to you.">
 <meta property="og:type" content="website">
 
-<!-- Security headers (best enforced server-side; these cover same-origin HTML delivery) -->
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
 <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<!-- CSP: allow self + trusted CDN only.
-     NOTE: nonce-TAP2026 is static (this is a static HTML file — no server to generate
-     per-request nonces). For production, move to a server and generate random nonces
-     per request, OR replace with hash-based CSP for true security. -->
 <meta http-equiv="Content-Security-Policy"
   content="default-src 'self';
            script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net 'nonce-TAP2026';
@@ -29,20 +24,16 @@
            frame-ancestors 'none';
            base-uri 'self';
            form-action 'self';">
-<!-- NOTE: upgrade-insecure-requests intentionally omitted during development.
-     Add it back ONLY when deploying to a real HTTPS server. -->
 
 <title>The Audio Project — Premium Hi-Fi Audio</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
-/* Skip link — visible on keyboard focus only */
 .skip-link{
   position:absolute;top:-999px;left:16px;
   background:#e8192c;color:#fff;padding:10px 18px;
   font-size:.85rem;font-weight:600;border-radius:0 0 8px 8px;
-  z-index:9999;text-decoration:none;
-  transition:top .2s;
+  z-index:9999;text-decoration:none;transition:top .2s;
 }
 .skip-link:focus{top:0;}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -68,7 +59,6 @@ nav a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1.5p
   background:#e8192c;transform:scaleX(0);transition:transform .25s;transform-origin:left;}
 nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 
-/* SERVICES DROPDOWN */
 .nav-dropdown{position:relative;display:inline-block;margin-left:32px;}
 .nav-dropdown>a{margin-left:0;}
 .nav-dropdown>a .arrow{display:inline-block;margin-left:6px;font-size:.55rem;
@@ -79,8 +69,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   transform:translateX(-50%) translateY(-4px);
   background:rgba(8,8,10,.95);backdrop-filter:blur(24px) saturate(1.6);
   border:1px solid rgba(255,255,255,.10);border-radius:14px;
-  padding:18px 0 10px;   /* top padding bridges the gap — no dead zone */
-  min-width:240px;
+  padding:18px 0 10px;min-width:240px;
   opacity:0;pointer-events:none;
   transition:opacity .22s ease,transform .22s ease;
   box-shadow:0 20px 60px rgba(0,0,0,.8);
@@ -102,92 +91,109 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .dropdown-divider{height:1px;background:rgba(255,255,255,.07);margin:4px 0;}
 
 /* ══════════════════════════════════════
-   SPEAKERS
-══════════════════════════════════════ */
-.spk{position:fixed;bottom:0;z-index:200;height:78vh;width:auto;pointer-events:none;will-change:transform;}
-.spk.left{left:4vw}.spk.right{right:4vw}
-.spk img{height:100%;width:auto;display:block;
-  filter:drop-shadow(-10px 20px 60px rgba(0,0,0,.85)) drop-shadow(0 0 20px rgba(0,0,0,.40));}
-.spk.right img{transform:scaleX(-1)}
-.base-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:130%;height:20px;
-  border-radius:50%;background:radial-gradient(ellipse,rgba(255,255,255,.6) 0%,transparent 70%);
-  filter:blur(8px);opacity:0;pointer-events:none;}
-.impact-ring{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scale(0);
-  width:160px;height:160px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,255,255,.5) 0%,transparent 65%);opacity:0;pointer-events:none;}
-
-/* ══════════════════════════════════════
-   SECTION 1
+   SECTION 1 — SPLIT HERO + FULL SCROLL EXPERIENCE
+   Video scrubs 0→10s while pinned.
+   Phase 1 (0–55%): split view  — text left, home-theater video right
+   Phase 2 (55–70%): "Our Services" heading over white video flash
+   Phase 3 (70–100%): service cards with video as dark background
 ══════════════════════════════════════ */
 #s1{position:relative;height:100vh;overflow:hidden;background:#000;}
-#bgVideo{position:absolute;top:-10%;left:-5%;width:110%;height:120%;object-fit:cover;z-index:1;will-change:transform;}
-.vig{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(to bottom,rgba(0,0,0,.08) 0%,rgba(0,0,0,.02) 45%,rgba(0,0,0,.44) 78%,rgba(0,0,0,.72) 100%);}
-@media(max-width:768px){
-  /* Light veil at top — lets video breathe.
-     Only the bottom 35% darkens to blend the speaker into the rock. */
-  .vig{
-    background:linear-gradient(
-      to bottom,
-      rgba(0,0,0,.10) 0%,
-      rgba(0,0,0,.05) 30%,
-      rgba(0,0,0,.18) 52%,
-      rgba(0,0,0,.60) 70%,
-      rgba(0,0,0,.88) 85%,
-      rgba(0,0,0,.96) 100%
-    );
-  }
-}
-#fog{position:absolute;bottom:0;left:0;right:0;height:55%;z-index:5;opacity:0;pointer-events:none;overflow:hidden;will-change:transform;}
-.fl{position:absolute;bottom:0;left:-20%;width:140%;height:100%;filter:blur(34px);}
-.fl1{background:radial-gradient(ellipse 78% 54% at 50% 100%,rgba(210,228,255,.24) 0%,rgba(180,208,255,.11) 50%,transparent 72%);animation:fd1 11s ease-in-out infinite alternate;}
-.fl2{background:radial-gradient(ellipse 54% 44% at 37% 100%,rgba(255,255,255,.15) 0%,transparent 64%);animation:fd2 14s ease-in-out infinite alternate;}
-.fl3{background:radial-gradient(ellipse 64% 37% at 64% 100%,rgba(200,218,255,.17) 0%,transparent 60%);animation:fd3 9s ease-in-out infinite alternate;}
-@keyframes fd1{from{transform:translateX(-6%) scaleY(.87)}to{transform:translateX(6%) scaleY(1.13)}}
-@keyframes fd2{from{transform:translateX(9%) scaleY(1.04)}to{transform:translateX(-9%) scaleY(.96)}}
-@keyframes fd3{from{transform:translateX(-4%) scaleY(1)}to{transform:translateX(7%) scaleY(1.17)}}
-#heroText{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;text-align:center;
-  padding:0 clamp(60px,14vw,240px);opacity:0;transform:translateY(24px);
-  pointer-events:none;will-change:transform,opacity;}
-.ht-tag{font-size:.72rem;font-weight:700;letter-spacing:.42em;text-transform:uppercase;color:#e8192c;margin-bottom:14px;}
-.ht-divider{width:52px;height:2px;background:#e8192c;border-radius:1px;margin:0 auto 18px;opacity:0;transform:scaleX(0);transform-origin:center;}
-.ht-title{font-size:clamp(2.8rem,6.5vw,6rem);font-weight:900;line-height:1.0;letter-spacing:-.03em;
-  color:#fff;text-shadow:0 4px 50px rgba(0,0,0,.65);margin-bottom:20px;}
-.ht-title em{font-style:normal;color:#e8192c;-webkit-text-stroke:2.5px #fff;paint-order:stroke fill;}
-.ht-desc{font-size:clamp(.9rem,1.25vw,1.12rem);font-weight:300;line-height:1.75;color:rgba(200,200,200,.80);max-width:580px;}
-#curtain{position:absolute;inset:0;z-index:18;background:rgba(4,8,16,1);opacity:0;pointer-events:none;}
-/* Fog-light flare — brief luminous overexposure at transition peak */
-#s1-flare{
-  position:absolute;inset:0;z-index:17;pointer-events:none;opacity:0;
-  background:radial-gradient(ellipse 90% 55% at 50% 55%,
-    rgba(180,210,255,0.55) 0%,
-    rgba(140,180,240,0.25) 40%,
-    transparent 72%);
-}
-.wm{position:absolute;bottom:0;height:80px;z-index:15;pointer-events:none;}
-/* Watermark blot — removed (video no longer needs masking) */
-.wm-blot{display:none;}
 
-/* ══════════════════════════════════════
-   SECTION 2 — fog video + service cards
-══════════════════════════════════════ */
-#s2{position:relative;width:100%;height:100vh;overflow:hidden;background:#000;}
-#vid2{position:absolute;top:-10%;left:0;width:100%;height:120%;object-fit:cover;
-  display:block;z-index:1;will-change:transform;}
-.vig2{position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(to bottom,rgba(0,0,0,.30) 0%,rgba(0,0,0,.12) 40%,rgba(0,0,0,.40) 100%);}
+/* Master video — always full-screen, scrubbed by scroll */
+#mainVid{
+  position:absolute;top:-10%;left:0;
+  width:100%;height:120%;object-fit:cover;
+  z-index:1;will-change:transform;
+}
 
-/* ── Service cards ── */
+/* ── PHASE 1: Hero left dark panel ── */
+#heroLeft{
+  position:absolute;left:0;top:0;
+  width:55%;height:100%;
+  display:flex;align-items:center;
+  /* Dark background fades to transparent on right edge */
+  background:linear-gradient(to right,
+    #000 0%,#000 46%,
+    rgba(0,0,0,.82) 64%,
+    rgba(0,0,0,.38) 82%,
+    transparent 100%);
+  z-index:10;will-change:opacity;
+  pointer-events:none;
+}
+
+/* Text content block */
+#heroText{
+  display:flex;flex-direction:column;align-items:flex-start;
+  text-align:left;
+  padding-left:clamp(28px,6vw,80px);
+  padding-right:clamp(16px,2.5vw,36px);
+  opacity:0;transform:translateX(-22px);
+  will-change:transform,opacity;
+}
+.ht-tag{
+  font-size:.72rem;font-weight:700;letter-spacing:.42em;
+  text-transform:uppercase;color:#e8192c;margin-bottom:14px;
+}
+.ht-divider{
+  width:52px;height:2px;background:#e8192c;border-radius:1px;
+  margin:0 0 18px;opacity:0;transform:scaleX(0);transform-origin:left;
+}
+.ht-title{
+  font-size:clamp(2.4rem,4.2vw,4.8rem);font-weight:900;
+  line-height:1.0;letter-spacing:-.03em;
+  color:#fff;text-shadow:0 4px 50px rgba(0,0,0,.65);margin-bottom:20px;
+}
+.ht-title em{
+  font-style:normal;color:#e8192c;
+  -webkit-text-stroke:2.5px #fff;paint-order:stroke fill;
+}
+.ht-desc{
+  font-size:clamp(.88rem,1.05vw,1.02rem);font-weight:300;
+  line-height:1.75;color:rgba(200,200,200,.80);max-width:400px;
+}
+
+/* Subtle glowing separator between panels */
+#vidEdge{
+  position:absolute;top:0;left:50%;width:1px;height:100%;
+  background:linear-gradient(to bottom,
+    transparent 0%,rgba(255,255,255,.07) 25%,
+    rgba(255,255,255,.18) 50%,rgba(255,255,255,.07) 75%,transparent 100%);
+  z-index:8;pointer-events:none;will-change:opacity;
+}
+
+/* ── PHASE 2: "Our Services" heading overlay ── */
+#svcTitle{
+  position:absolute;inset:0;z-index:20;opacity:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;pointer-events:none;
+}
+.svc-eyebrow{
+  font-size:.72rem;font-weight:700;letter-spacing:.42em;
+  text-transform:uppercase;color:rgba(0,0,0,.55);margin-bottom:18px;
+}
+.svc-headline{
+  font-size:clamp(3rem,7vw,5.8rem);font-weight:900;
+  line-height:1.0;letter-spacing:-.03em;color:#111;
+}
+.svc-headline em{font-style:normal;color:#e8192c;}
+
+/* ── PHASE 3: Dark vignette for card readability ── */
+#svcVig{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,
+    rgba(0,0,0,.45) 0%,rgba(0,0,0,.22) 40%,rgba(0,0,0,.50) 100%);
+  z-index:2;opacity:0;pointer-events:none;will-change:opacity;
+}
+
+/* ── SERVICE CARDS (same style, now inside #s1) ── */
 .svc-slide{
-  position:absolute;inset:0;z-index:5;
+  position:absolute;inset:0;z-index:15;
   display:flex;align-items:center;justify-content:center;
   padding:80px 6vw 60px;
   opacity:0;pointer-events:none;
   will-change:transform,opacity;
 }
-
-/* DARKER glass card for readability */
 .svc-glass{
   display:flex;align-items:center;gap:5vw;
   width:100%;max-width:1180px;
@@ -220,8 +226,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 }
 .svc-img-wrap{
   flex-shrink:0;
-  width:clamp(190px,20vw,300px);
-  height:clamp(190px,20vw,300px);
+  width:clamp(190px,20vw,300px);height:clamp(190px,20vw,300px);
   border-radius:50%;overflow:hidden;
   border:2px solid rgba(255,255,255,.20);
   box-shadow:0 0 0 8px rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.7);
@@ -234,15 +239,24 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   color:rgba(255,255,255,.07);letter-spacing:-.04em;
   line-height:1;pointer-events:none;user-select:none;
 }
-
-/* Progress dots */
 #svcDots{
   position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
-  z-index:10;display:flex;gap:10px;opacity:0;transition:opacity .4s;
+  z-index:20;display:flex;gap:10px;opacity:0;transition:opacity .4s;
 }
 .sdot{width:8px;height:8px;border-radius:50%;
   background:rgba(255,255,255,.25);transition:background .3s,transform .3s;}
 .sdot.active{background:#00d4ff;transform:scale(1.4);}
+
+/* Watermark masks */
+.wm{position:absolute;bottom:0;height:80px;z-index:15;pointer-events:none;}
+.wm-blot{display:none;}
+
+/* ══════════════════════════════════════
+   MOBILE SPEAKER (inside #s1, scrolls away with section)
+══════════════════════════════════════ */
+#spkMobile{
+  display:none;
+}
 
 /* ══════════════════════════════════════
    TRENDING PRODUCTS — SPLIT + GALAXY
@@ -259,7 +273,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   object-fit:cover;pointer-events:none;z-index:0;
   opacity:0.35;
 }
-/* LEFT panel */
 .tr-left{
   position:relative;z-index:5;
   flex:0 0 42%;padding:0 0 0 7vw;
@@ -281,12 +294,10 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .tr-stats{display:flex;gap:28px;margin-bottom:32px;}
 .tr-stat-num{font-size:1.75rem;font-weight:900;color:#fff;line-height:1;}
 .tr-stat-lbl{font-size:.64rem;color:rgba(255,255,255,.42);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
-/* .tr-cta removed */
 .tr-cta--unused{
   display:inline-flex;align-items:center;gap:10px;
   padding:12px 26px;border-radius:50px;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
   color:#fff;font-size:.78rem;font-weight:600;
   letter-spacing:.1em;text-transform:uppercase;
   cursor:pointer;transition:all .25s ease;width:fit-content;
@@ -294,28 +305,23 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .tr-cta:hover{background:rgba(0,212,255,.12);border-color:#00d4ff;color:#00d4ff;}
 .tr-cta-arrow{transition:transform .25s;}
 .tr-cta:hover .tr-cta-arrow{transform:translateX(5px);}
-/* RIGHT panel */
 .tr-right{
   position:relative;z-index:5;
   flex:1;height:100%;
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;
 }
-/* orbital box removed — products float directly on the galaxy background */
-.tr-right::before{ display:none; }
+.tr-right::before{display:none;}
 @keyframes glassGlow{
   0%,100%{box-shadow:0 8px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06),0 0 40px rgba(99,60,220,.25),0 0 80px rgba(59,130,246,.12),0 0 0 1px rgba(139,92,246,.15);}
   50%{box-shadow:0 8px 48px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.08),0 0 60px rgba(99,60,220,.38),0 0 120px rgba(59,130,246,.18),0 0 0 1px rgba(139,92,246,.28);}
 }
 #orb-stage,#orb-hint{position:relative;z-index:2;}
-/* Orbital stage — fixed size box, nodes positioned within it */
 #orb-stage{
   position:relative;
   width:460px;height:460px;
   flex-shrink:0;
 }
-
-/* Center orb — centred inside fixed stage */
 #orb-center{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -333,7 +339,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .orb-core{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.9);}
 @keyframes orbPulse{0%,100%{box-shadow:0 0 20px rgba(139,92,246,.7)}50%{box-shadow:0 0 45px rgba(59,130,246,.9)}}
 @keyframes orbPing{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.8);opacity:0}}
-/* Orbit ring — centred */
 #orb-ring{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
@@ -341,7 +346,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   border-radius:50%;border:1px solid rgba(255,255,255,.10);
   pointer-events:none;
 }
-/* Nodes — positioned from centre of stage via JS */
 .orb-node{
   position:absolute;top:50%;left:50%;
   cursor:pointer;transition:opacity .4s ease;
@@ -374,7 +378,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);
   pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%);
 }
-/* Card — fixed position so it never clips */
 .orb-card{
   position:fixed;width:250px;
   background:rgba(18,18,32,.82);
@@ -436,7 +439,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   font-size:.88rem;line-height:1.75;color:rgba(200,200,200,.6);
   max-width:300px;margin-bottom:24px;
 }
-
 .footer-col h4{
   font-size:.72rem;font-weight:700;letter-spacing:.22em;
   text-transform:uppercase;color:#fff;margin-bottom:20px;
@@ -448,13 +450,11 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   text-decoration:none;transition:color .18s;
 }
 .footer-col ul li a:hover{color:#00d4ff;}
-
 .footer-contact p{
   font-size:.85rem;color:rgba(200,200,200,.55);
   line-height:1.70;margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;
 }
 .footer-contact p span.icon{color:#00d4ff;flex-shrink:0;margin-top:2px;}
-
 .footer-divider{height:1px;background:rgba(255,255,255,.06);margin-bottom:28px;}
 .footer-bottom{
   display:flex;align-items:center;justify-content:space-between;
@@ -464,58 +464,36 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .footer-bottom a:hover{color:#fff;}
 
 /* ══════════════════════════════════════
-   MOBILE CENTERED SPEAKER
+   MOBILE SPEAKER (shows inside #s1 on mobile)
 ══════════════════════════════════════ */
-#spkMobile{
-  display:none; /* hidden on desktop */
-}
 @media(max-width:768px){
-  /* ── Hero section: always has a rich dark fallback in case video is blocked ── */
-  #s1{
-    background: linear-gradient(160deg,#0a0a14 0%,#160a0f 45%,#0a0a14 100%) !important;
-  }
-
-  /* ── Hide desktop side speakers ── */
-  #spkL, #spkR{ display:none !important; }
-
-  /* ── Single centered speaker — absolute inside #s1, scrolls away with hero ── */
   #spkMobile{
     display:block;
     position:absolute;
-    bottom:0;
-    left:50%;
+    bottom:0;left:50%;
     transform:translateX(-50%);
-    z-index:8;
-    pointer-events:none;
-    height:62vh;
-    width:auto;
+    z-index:8;pointer-events:none;
+    height:55vh;width:auto;
   }
   #spkMobile img{
-    height:100%;
-    width:auto;
-    display:block;
-    /* gentle dark drop-shadow at base gives depth without killing the image */
+    height:100%;width:auto;display:block;
     filter:
       drop-shadow(0 -2px 18px rgba(0,0,0,.4))
       drop-shadow(0 24px 48px rgba(0,0,0,.85));
   }
-  /* Rock-contact shadow — widens at base to sell the "sitting on rock" look */
   .spk-mob-glow{
-    position:absolute;
-    bottom:0px; left:50%;
-    transform:translateX(-50%);
-    width:75%; height:18px;
-    border-radius:50%;
+    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:75%;height:18px;border-radius:50%;
     background:radial-gradient(ellipse,rgba(0,0,0,.75) 0%,transparent 70%);
     filter:blur(8px);
   }
 }
 @media(max-width:420px){
-  #spkMobile{ height:50vh; }
+  #spkMobile{height:44vh;}
 }
 
 /* ══════════════════════════════════════
-   HAMBURGER BUTTON (mobile only)
+   HAMBURGER BUTTON
 ══════════════════════════════════════ */
 .hamburger{
   display:none;flex-direction:column;justify-content:center;
@@ -572,13 +550,13 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   font-size:.95rem;font-weight:500;letter-spacing:.06em;
   text-transform:uppercase;color:rgba(200,200,200,.75);
   text-decoration:none;border-bottom:1px solid rgba(255,255,255,.05);
-  transition:color .18s, background .18s;
+  transition:color .18s,background .18s;
 }
 .mnav-svc-item:last-child{border-bottom:none;}
 .mnav-svc-item:hover,.mnav-svc-item:active{color:#00d4ff;background:rgba(0,212,255,.06);}
 
 /* ══════════════════════════════════════
-   RESPONSIVE — TABLET (≤ 900px)
+   RESPONSIVE — TABLET (≤900px)
 ══════════════════════════════════════ */
 @media(max-width:900px){
   .svc-glass{gap:3vw;padding:40px 36px;}
@@ -586,12 +564,12 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 }
 
 /* ══════════════════════════════════════
-   RESPONSIVE — MOBILE (≤ 768px)
+   RESPONSIVE — MOBILE (≤768px)
 ══════════════════════════════════════ */
 @media(max-width:768px){
 
-  /* NAV — logo left, hamburger right, more visible */
-  #topNav{padding:0 18px; background:rgba(0,0,0,.96);}
+  /* NAV */
+  #topNav{padding:0 18px;background:rgba(0,0,0,.96);}
   #topNav nav{display:none;}
   .hamburger{
     display:flex;
@@ -601,47 +579,43 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     width:44px;height:44px;gap:5px;
     padding:10px;
   }
-  .hamburger span{
-    background:#fff;
-    height:2px;
+  .hamburger span{background:#fff;height:2px;width:100%;border-radius:2px;display:block;}
+
+  /* HERO LEFT: full-width on mobile */
+  #heroLeft{
     width:100%;
-    border-radius:2px;
-    display:block;
+    background:linear-gradient(to bottom,
+      rgba(0,0,0,.88) 0%,
+      rgba(0,0,0,.62) 50%,
+      rgba(0,0,0,.18) 75%,
+      transparent 100%);
+    align-items:flex-start;
   }
-
-  /* SPEAKERS — much shorter so they don't invade text */
-  .spk{height:28vh; bottom:0;}
-  .spk.left{left:0;}
-  .spk.right{right:0;}
-
-  /* HERO TEXT — top half of screen only */
   #heroText{
-    padding: 0 22px;
-    justify-content: flex-start;
-    padding-top: 14vh;
-    padding-bottom: 46vh; /* keeps text out of the bottom 46% where speaker lives */
-    align-items: center;
-    text-align: center;
+    align-items:center;text-align:center;
+    padding:14vh 22px 0;
   }
-  .ht-tag{
-    font-size:.68rem; letter-spacing:.3em; margin-bottom:10px;
-  }
+  .ht-divider{margin:0 auto 18px;}
   .ht-title{
-    font-size: clamp(2.2rem, 10.5vw, 3.4rem);
-    line-height: 1.05;
-    text-shadow: 0 2px 24px rgba(0,0,0,.95), 0 0 50px rgba(0,0,0,.8);
-    margin-bottom: 14px;
+    font-size:clamp(2.2rem,10.5vw,3.4rem);
+    line-height:1.05;
+    text-shadow:0 2px 24px rgba(0,0,0,.95),0 0 50px rgba(0,0,0,.8);
+    margin-bottom:14px;
   }
-  .ht-title em{ -webkit-text-stroke:1.5px #fff; }
+  .ht-title em{-webkit-text-stroke:1.5px #fff;}
   .ht-desc{
-    font-size: .88rem;
-    color: rgba(255,255,255,.92);
-    text-shadow: 0 1px 10px rgba(0,0,0,.98), 0 2px 20px rgba(0,0,0,.9);
-    max-width: 100%;
-    line-height: 1.65;
+    font-size:.88rem;
+    color:rgba(255,255,255,.92);
+    text-shadow:0 1px 10px rgba(0,0,0,.98),0 2px 20px rgba(0,0,0,.9);
+    max-width:100%;line-height:1.65;
   }
+  #vidEdge{display:none;}
 
-  /* SERVICE CARD — stack vertically */
+  /* "Our Services" heading — white text on mobile (video may be darker) */
+  .svc-eyebrow{color:rgba(255,255,255,.60);}
+  .svc-headline{color:#fff;}
+
+  /* SERVICE CARDS: stack vertically */
   .svc-slide{padding:74px 14px 55px;}
   .svc-glass{
     flex-direction:column;align-items:center;
@@ -651,7 +625,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   .svc-desc{max-width:100%;}
   .svc-img-wrap{
     width:130px;height:130px;
-    order:-1;               /* image on top */
+    order:-1;
   }
   .svc-num{font-size:3rem;bottom:30px;right:24px;}
   #svcDots{bottom:18px;}
@@ -664,11 +638,10 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 }
 
 /* ══════════════════════════════════════
-   RESPONSIVE — SMALL MOBILE (≤ 420px)
+   RESPONSIVE — SMALL MOBILE (≤420px)
 ══════════════════════════════════════ */
 @media(max-width:420px){
-  .spk{height:22vh;}
-  #heroText{ padding:0 16px; padding-top:12vh; padding-bottom:42vh; }
+  #heroText{padding-top:12vh;}
   .ht-title{font-size:clamp(2rem,11.5vw,2.8rem);}
   .svc-glass{padding:26px 16px;}
   .svc-title{font-size:1.65rem;}
@@ -683,13 +656,10 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   background:#000;
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:32px;
-  transition:opacity .7s ease, visibility .7s ease;
+  transition:opacity .7s ease,visibility .7s ease;
 }
 #preloader.hidden{opacity:0;visibility:hidden;pointer-events:none;}
-.pre-logo{
-  height:56px;width:auto;
-  animation:prePulse 1.8s ease-in-out infinite;
-}
+.pre-logo{height:56px;width:auto;animation:prePulse 1.8s ease-in-out infinite;}
 @keyframes prePulse{0%,100%{opacity:.55;transform:scale(1);}50%{opacity:1;transform:scale(1.06);}}
 .pre-bars{display:flex;align-items:flex-end;gap:5px;height:36px;}
 .pre-bar{
@@ -704,10 +674,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .pre-bar:nth-child(5){height:32px;animation-delay:.48s;}
 .pre-bar:nth-child(6){height:18px;animation-delay:.60s;}
 .pre-bar:nth-child(7){height:26px;animation-delay:.72s;}
-@keyframes preBar{
-  0%,100%{transform:scaleY(1);opacity:.5;}
-  50%{transform:scaleY(1.6);opacity:1;}
-}
+@keyframes preBar{0%,100%{transform:scaleY(1);opacity:.5;}50%{transform:scaleY(1.6);opacity:1;}}
 .pre-label{
   font-size:.62rem;letter-spacing:.25em;text-transform:uppercase;
   color:rgba(255,255,255,.35);font-weight:400;
@@ -772,7 +739,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   <style>
     #preloader{display:none!important;}
     #topNav{transform:none!important;}
-    .spk{display:none!important;}
   </style>
   <div style="position:fixed;inset:0;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:sans-serif;text-align:center;padding:24px;z-index:9999;">
     <img src="logo.jpg" alt="The Audio Project" style="height:50px;">
@@ -792,7 +758,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   <span class="pre-label">Tuning your experience…</span>
 </div>
 
-<!-- PRELOADER DISMISS — own script tag, independent of GSAP -->
+<!-- Preloader dismiss — independent of GSAP -->
 <script nonce="TAP2026">
 (function(){
   var loader = document.getElementById('preloader');
@@ -802,7 +768,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     loader.classList.add('hidden');
     setTimeout(function(){ loader.style.display='none'; }, 800);
   }
-  var vid = document.getElementById('bgVideo');
+  var vid = document.getElementById('mainVid');
   if(vid){
     vid.addEventListener('canplay',        dismiss, {once:true});
     vid.addEventListener('canplaythrough', dismiss, {once:true});
@@ -810,14 +776,14 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     if(vid.readyState >= 2) { dismiss(); }
   }
   window.addEventListener('load', dismiss, {once:true});
-  setTimeout(dismiss, 2500); /* hard cap — never gets stuck */
+  setTimeout(dismiss, 2500);
 })();
 </script>
 
 <!-- SCROLL PROGRESS BAR -->
 <div id="scrollBar" role="progressbar" aria-label="Page scroll progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
 
-<!-- COOKIE CONSENT BANNER — hidden by default, JS shows it for new visitors only -->
+<!-- COOKIE CONSENT -->
 <div id="cookieBanner" role="dialog" aria-label="Cookie consent" aria-live="polite" style="display:none">
   <span class="ck-icon">🍪</span>
   <div class="ck-text">
@@ -829,7 +795,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
   </div>
 </div>
 
-<!-- Skip to main content (accessibility) -->
 <a href="#s1" class="skip-link">Skip to main content</a>
 
 <!-- NAV -->
@@ -851,16 +816,14 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     </div>
     <a href="#" id="navContact">Contact Us</a>
   </nav>
-  <!-- Hamburger (mobile only) -->
   <button class="hamburger" id="hamburger" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
 </header>
 
-<!-- MOBILE NAV OVERLAY -->
+<!-- MOBILE NAV -->
 <div id="mobileNav">
   <a href="#" class="mnav-link" id="mNavHome">Home</a>
-
   <button class="mnav-svc-toggle" id="mNavSvcToggle">
     Services <span class="m-arrow">▼</span>
   </button>
@@ -870,50 +833,45 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     <a href="#" class="mnav-svc-item dd-link" data-svc="2">Home Theater</a>
     <a href="#" class="mnav-svc-item dd-link" data-svc="3">Hi-Fi Stereo</a>
   </div>
-
   <a href="#" class="mnav-link" id="mNavContact">Contact Us</a>
 </div>
 
-<!-- SPEAKERS — desktop: two sides | mobile: one centered -->
-<div class="spk left"  id="spkL"><img src="speaker_cropped.png" alt="Left speaker" loading="eager"><div class="base-glow" id="glowL"></div><div class="impact-ring" id="impL"></div></div>
-<div class="spk right" id="spkR"><img src="speaker_cropped.png" alt="Right speaker" loading="eager"><div class="base-glow" id="glowR"></div><div class="impact-ring" id="impR"></div></div>
-<!-- MOBILE ONLY: single centered static speaker -->
-<div id="spkMobile">
-  <img src="speaker_cropped.png" alt="Speaker">
-  <div class="spk-mob-glow"></div>
-</div>
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 1 — SINGLE PINNED SCROLL EXPERIENCE
+     Phase 1 (0–55% scroll): Split layout — text left, video right
+     Phase 2 (55–70% scroll): "Our Services" heading on white flash
+     Phase 3 (70–100% scroll): Service cards over video background
+═══════════════════════════════════════════════════════════════ -->
+<section id="s1" role="main" aria-label="Hero and Services">
 
-<!-- SECTION 1 — HERO -->
-<section id="s1" role="main" aria-label="Hero">
-  <video id="bgVideo" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
-    <source src="hero-final.mp4" type="video/mp4">
+  <!-- Master video — scrubbed 0→10s by scroll -->
+  <video id="mainVid" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
+    <source src="main-video.mp4" type="video/mp4">
   </video>
-  <div class="vig"></div>
-  <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
-  <div class="wm" style="left:0;width:220px;background:linear-gradient(to right,rgba(0,0,0,.92) 60%,transparent)"></div>
-  <!-- full bottom strip covers any bottom watermark -->
-  <div style="position:absolute;bottom:0;left:0;right:0;height:56px;z-index:16;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.95),transparent)"></div>
-  <!-- center-bottom blot for Gemini / AI icon -->
-  <div class="wm-blot" style="bottom:6px;left:50%;transform:translateX(-50%);width:140px;height:38px;"></div>
-  <!-- bottom-right blot -->
-  <div class="wm-blot" style="bottom:6px;right:8px;width:120px;height:38px;"></div>
-  <div id="fog"><div class="fl fl1"></div><div class="fl fl2"></div><div class="fl fl3"></div></div>
-  <div id="heroText">
-    <p class="ht-tag">Premium Hi-Fi Audio</p>
-    <div class="ht-divider" id="htDivider"></div>
-    <h1 class="ht-title">Your Gateway to<br><em>Excellence</em></h1>
-    <p class="ht-desc">At The Audio Project, it's more than just buying speakers or headphones — it's about embarking on a sonic adventure designed just for you.</p>
+
+  <!-- Dark vignette for service card readability (Phase 3) -->
+  <div id="svcVig"></div>
+
+  <!-- Phase 1: Hero text — left panel -->
+  <div id="heroLeft">
+    <div id="heroText">
+      <p class="ht-tag">Premium Hi-Fi Audio</p>
+      <div class="ht-divider" id="htDivider"></div>
+      <h1 class="ht-title">Your Gateway to<br><em>Excellence</em></h1>
+      <p class="ht-desc">At The Audio Project, it's more than just buying speakers or headphones — it's about embarking on a sonic adventure designed just for you.</p>
+    </div>
   </div>
-  <div id="s1-flare"></div>
-  <div id="curtain"></div>
-</section>
 
-<!-- SECTION 2 — VIDEO + SERVICE CARDS -->
-<div id="s2">
-  <video id="vid2" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
-    <source src="s2-video.mp4" type="video/mp4">
-  </video>
-  <div class="vig2"></div>
+  <!-- Subtle glowing line between left text and right video -->
+  <div id="vidEdge"></div>
+
+  <!-- Phase 2: "Our Services" heading (appears over white video flash at ~7s) -->
+  <div id="svcTitle">
+    <p class="svc-eyebrow">Explore What We Do</p>
+    <h2 class="svc-headline">Our <em>Services</em></h2>
+  </div>
+
+  <!-- Phase 3: Service cards (appear from video ~8s onwards) -->
 
   <!-- CARD 1: Corporate AV -->
   <div class="svc-slide" id="svc0">
@@ -983,18 +941,23 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     <div class="sdot"></div>
   </div>
 
+  <!-- Mobile speaker (visible only on mobile, scrolls away with section) -->
+  <div id="spkMobile">
+    <img src="speaker_cropped.png" alt="Speaker">
+    <div class="spk-mob-glow"></div>
+  </div>
+
+  <!-- Bottom fade and watermark masks -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:56px;z-index:16;pointer-events:none;background:linear-gradient(to top,rgba(0,0,0,.95),transparent)"></div>
   <div class="wm" style="right:0;width:220px;background:linear-gradient(to left,rgba(0,0,0,.92) 60%,transparent)"></div>
   <div class="wm" style="left:0;width:220px;background:linear-gradient(to right,rgba(0,0,0,.92) 60%,transparent)"></div>
-</div>
+</section>
 
 <!-- TRENDING PRODUCTS — SPLIT LAYOUT + GALAXY -->
 <section id="trending">
-  <!-- galaxy background video -->
   <video id="galaxy-video" autoplay loop muted playsinline preload="auto">
     <source src="galaxy-bg.mp4" type="video/mp4">
   </video>
-
-  <!-- LEFT: heading + info -->
   <div class="tr-left">
     <p class="tr-tag">Handpicked For You</p>
     <h2 class="tr-title">Trending<br>Products</h2>
@@ -1005,30 +968,22 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
       <div><div class="tr-stat-num">100%</div><div class="tr-stat-lbl">Curated</div></div>
     </div>
   </div>
-
-  <!-- RIGHT: orbital -->
   <div class="tr-right">
     <div id="orb-stage">
       <div id="orb-ring"></div>
       <div id="orb-center"><div class="orb-core"></div></div>
-      <!-- nodes injected by JS -->
     </div>
   </div>
-
   <div id="orb-hint">Click a product · Click background to dismiss</div>
 </section>
 
-<!-- FOOTER — appears naturally after last card scroll -->
+<!-- FOOTER -->
 <footer id="footer" role="contentinfo">
   <div class="footer-top">
-
-    <!-- Brand -->
     <div class="footer-brand">
       <img class="logo-img" src="logo.jpg" alt="The Audio Project">
       <p>At The Audio Project, we believe great sound transforms lives. We curate and install world-class audio-visual experiences tailored precisely to you.</p>
     </div>
-
-    <!-- Services -->
     <div class="footer-col">
       <h4>Services</h4>
       <ul>
@@ -1038,8 +993,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
         <li><a href="#" class="dd-link" data-svc="3">Hi-Fi Stereo</a></li>
       </ul>
     </div>
-
-    <!-- Contact -->
     <div class="footer-col footer-contact">
       <h4>Contact Us</h4>
       <p><span class="icon">📍</span>The Audio Project, Kochi, Kerala, India</p>
@@ -1047,9 +1000,7 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
       <p><span class="icon">✉️</span>hello@theaudioproject.in</p>
       <p><span class="icon">🕐</span>Mon – Sat: 10:00 AM – 7:00 PM</p>
     </div>
-
   </div>
-
   <div class="footer-divider"></div>
   <div class="footer-bottom">
     <p>© 2026 The Audio Project. All rights reserved.</p>
@@ -1059,8 +1010,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 
 <script nonce="TAP2026">
 gsap.registerPlugin(ScrollTrigger);
-
-/* Preloader handled in its own script tag above — independent of GSAP */
 
 /* ══════════════════════════════════════
    SCROLL PROGRESS BAR
@@ -1082,279 +1031,203 @@ gsap.registerPlugin(ScrollTrigger);
    COOKIE CONSENT
 ══════════════════════════════════════ */
 (function(){
-  const banner  = document.getElementById('cookieBanner');
-  const accept  = document.getElementById('ckAccept');
-  const reject  = document.getElementById('ckReject');
-  const KEY     = 'tap_cookie_consent';
-
-  /* Already decided — stay hidden (display:none default), nothing to do */
+  const banner = document.getElementById('cookieBanner');
+  const accept = document.getElementById('ckAccept');
+  const reject = document.getElementById('ckReject');
+  const KEY    = 'tap_cookie_consent';
   if(localStorage.getItem(KEY)) return;
-
-  /* New visitor: show after preloader fades */
   setTimeout(() => { banner.style.display = 'flex'; }, 3200);
-
   function savePref(val){
     localStorage.setItem(KEY, val);
     banner.classList.add('hidden');
     setTimeout(() => { banner.style.display = 'none'; }, 550);
   }
-
   accept.addEventListener('click', () => savePref('all'));
   reject.addEventListener('click', () => savePref('essential'));
-
-  /* Keyboard: Escape = essential only */
   document.addEventListener('keydown', e => {
     if(e.key === 'Escape' && !banner.classList.contains('hidden')) savePref('essential');
   });
 })();
 
-const vw    = window.innerWidth;
-const exitX = vw + 500;
+/* ══════════════════════════════════════
+   MAIN VIDEO + SCROLL EXPERIENCE
+   Single video, scrubbed 0→10s across entire pinned section.
 
-/* ── 1. PRIME VIDEO ─────────────────────────── */
-const bgVideo = document.getElementById('bgVideo');
-const vid2    = document.getElementById('vid2');
+   Scroll progress → video time mapping (non-linear):
+     0.00–0.55  →  video 0–7s   (hero split view, 6 screen-heights)
+     0.55–0.70  →  video 7–8s   ("Our Services" heading, 1.5 screen-heights)
+     0.70–1.00  →  video 8–10s  (4 service cards, 3 screen-heights)
+══════════════════════════════════════ */
+const mainVid = document.getElementById('mainVid');
+const VIDEO_DUR = 10; // seconds
 
-/* Force muted via JS too — required by iOS Safari */
-bgVideo.muted = true;
-vid2.muted    = true;
-
-/* Prime the scrub video so first seek is instant */
-vid2.load();
-vid2.addEventListener('loadedmetadata', () => {
-  vid2.currentTime = 6.5;
-  vid2.play().then(() => { vid2.pause(); vid2.currentTime = 6.5; }).catch(() => { vid2.currentTime = 6.5; });
+/* ── Prime video at frame 0 ── */
+mainVid.muted = true;
+mainVid.addEventListener('loadedmetadata', () => {
+  mainVid.currentTime = 0;
+  mainVid.play().then(() => { mainVid.pause(); mainVid.currentTime = 0; }).catch(() => {});
 }, { once: true });
 
-/* Fallback: if hero video fails, show a dark gradient instead of black */
-bgVideo.addEventListener('error', () => {
-  document.getElementById('s1').style.background =
-    'linear-gradient(160deg,#0a0a0f 0%,#1a0a12 40%,#0a0a0f 100%)';
-}, { once: true });
-
-/* Mobile autoplay unlock — retries on every touch until video plays.
-   No once:true — keeps trying if video isn't buffered yet on first tap. */
-function unlockBgVideo(){
-  if(!bgVideo.paused){
-    document.removeEventListener('touchstart', unlockBgVideo);
-    return;
-  }
-  bgVideo.load();
-  bgVideo.play().then(() => {
-    document.removeEventListener('touchstart', unlockBgVideo);
-  }).catch(() => { /* keep listener, retry on next touch */ });
+/* Mobile: unlock autoplay on first touch */
+function tryUnlock(){
+  mainVid.play().then(() => { mainVid.pause(); document.removeEventListener('touchstart', tryUnlock); }).catch(()=>{});
 }
-document.addEventListener('touchstart', unlockBgVideo, { passive:true });
-/* Also try once the page is fully loaded */
-window.addEventListener('load', () => {
-  if(bgVideo.paused) bgVideo.play().catch(()=>{});
-}, { once:true });
+document.addEventListener('touchstart', tryUnlock, { passive:true });
 
-
-/* ── 2. ENTRANCE ────────────────────────────── */
-gsap.set('#spkL', { x: -(vw + 400) });
-gsap.set('#spkR', { x:  (vw + 400) });
-
-gsap.timeline({ delay: 0.15 })
-  .to('#spkL',            { x:0, duration:.85, ease:'power2.out' }, 0)
-  .to('#spkR',            { x:0, duration:.85, ease:'power2.out' }, 0)
-  .to('#topNav',          { y:0, duration:.35, ease:'power2.out' }, 0.80)
-  .to(['#impL','#impR'],  { opacity:.85, scale:3,   duration:.12, ease:'power2.out' }, 0.82)
-  .to(['#impL','#impR'],  { opacity:0,   scale:6.5, duration:.18, ease:'power2.in'  }, 0.94)
-  .to(['#glowL','#glowR'],{ opacity:1,   duration:.22, ease:'power1.out' }, 0.84)
-  .to('#fog',             { opacity:1,   duration:.55, ease:'power1.out' }, 0.90)
-  .to('#htDivider',       { opacity:1, scaleX:1, duration:.28, ease:'power2.out' }, 1.10)
-  .to('#heroText',        { opacity:1, y:0,      duration:.45, ease:'power2.out' }, 1.18);
-
-
-/* ── 3. HERO → S2 TRANSITION: "Atmosphere Descent" ─────────────────
-   Feeling: you descend through the fog into the aerial footage below.
-   No hard black cut — a fog-light overexposure bridges both sections.
-────────────────────────────────────────────────────────────────── */
-gsap.timeline({
-  scrollTrigger:{ trigger:'#s1', start:'top top', end:'bottom top', scrub:1.2 }
-})
-/* ① Hero video zooms in slowly — simulates downward motion into the fog */
-.to('#bgVideo', {
-  scale:1.13, y:'-5%', ease:'none'
-}, 0)
-
-/* ② Text drifts upward and dissolves with depth-of-field blur */
-.to('#heroText', {
-  y:'-52px', opacity:0,
-  filter:'blur(5px)',
-  ease:'power1.in',
-  duration:0.50
-}, 0)
-
-/* ③ CSS fog layer swells up — fog rises to engulf the frame */
-.to('#fog', {
-  scaleY:1.8, y:'-8%', opacity:1,
-  transformOrigin:'50% 100%',
-  ease:'power1.in',
-  duration:0.65
-}, 0.15)
-
-/* ④ Vignette darkens at edges (atmosphere thickens) */
-.to('.vig', {
-  opacity:1.0,
-  ease:'power2.in',
-  duration:0.55
-}, 0.20)
-
-/* ⑤ Fog-light flare — brief luminous glow at the "breaking through" moment */
-.to('#s1-flare', {
-  opacity:1, ease:'power2.out', duration:0.12
-}, 0.55)
-.to('#s1-flare', {
-  opacity:0, ease:'power2.in', duration:0.18
-}, 0.67)
-
-/* ⑥ Deep fog curtain fades in only at the very end — no premature blackout */
-.to('#curtain', {
-  opacity:0.96, ease:'power3.in', duration:0.28
-}, 0.72);
-
-
-
-
-
-
-/* ── 6. VIDEO SCRUB RAF ─────────────────────── */
-let targetVideoTime = 6.5;
-let lastSeekStamp   = 0;
-function videoSeekLoop(ts) {
-  requestAnimationFrame(videoSeekLoop);
-  if (!vid2.duration) return;
-  if (ts - lastSeekStamp < 16) return;
-  lastSeekStamp = ts;
-  const diff = targetVideoTime - vid2.currentTime;
-  if (Math.abs(diff) < 0.01) return;
-  vid2.currentTime += diff * 0.55;
+/* ── RAF scrub loop — lerps video toward target time ── */
+let targetTime  = 0;
+let lastSeekTs  = 0;
+function seekLoop(ts){
+  requestAnimationFrame(seekLoop);
+  if(!mainVid.duration) return;
+  if(ts - lastSeekTs < 16) return;
+  lastSeekTs = ts;
+  const diff = targetTime - mainVid.currentTime;
+  if(Math.abs(diff) < 0.012) return;
+  mainVid.currentTime += diff * 0.5;
 }
-requestAnimationFrame(videoSeekLoop);
+requestAnimationFrame(seekLoop);
 
+/* ── Map scroll progress to video time (non-linear) ── */
+function pToTime(p){
+  if(p <= 0.55) return (p / 0.55) * 7;         // 0–7s over 55% scroll
+  if(p <= 0.70) return 7 + (p - 0.55) / 0.15;  // 7–8s over 15% (dramatic slow)
+  return 8 + ((p - 0.70) / 0.30) * 2;           // 8–10s over 30% (card reveal)
+}
 
-/* ── 6. PIN S2 + SPEAKERS + VIDEO + CARDS ──────
-   Progress zones:
-   0.00 – 0.15 → speakers exit
-   0.15 – 0.35 → card 1 (Corporate AV)
-   0.35 – 0.55 → card 2 (Acoustic)
-   0.55 – 0.75 → card 3 (Home Theater)
-   0.75 – 1.00 → card 4 (Hi-Fi Stereo)            */
+/* ── Entrance animation ── */
+gsap.set('#topNav', { y: -100 });
+gsap.timeline({ delay: 0.20 })
+  .to('#topNav',   { y:0,      duration:.35, ease:'power2.out' }, 0)
+  .to('#heroText', { opacity:1, x:0, duration:.60, ease:'power2.out' }, 0.28)
+  .to('#htDivider',{ opacity:1, scaleX:1, duration:.30, ease:'power2.out' }, 0.68);
 
+/* ── Quick setters for per-frame updates ── */
+const qHero     = gsap.quickSetter('#heroLeft',  'opacity');
+const qEdge     = gsap.quickSetter('#vidEdge',   'opacity');
+const qSvcTitle = gsap.quickSetter('#svcTitle',  'opacity');
+const qSvcVig   = gsap.quickSetter('#svcVig',    'opacity');
+
+/* ── Service slides + dots ── */
 const slides = document.querySelectorAll('.svc-slide');
 const dots   = document.querySelectorAll('.sdot');
-const N      = slides.length;
-
-const zones = [
-  [0.15, 0.35],
-  [0.35, 0.55],
-  [0.55, 0.75],
-  [0.75, 1.00],
-];
-/* midpoints used for dropdown jump */
-const zoneMids = zones.map(([s,e]) => (s + e) / 2);
-
-gsap.set(slides, { opacity:0, y:50 });
-
 let shownCard = -1;
 
-function showCard(p) {
-  zones.forEach(([s, e], i) => {
-    const inZone = p >= s && p < e;
-    if (inZone && shownCard !== i) {
-      if (shownCard >= 0) {
-        gsap.killTweensOf(slides[shownCard]);
-        gsap.to(slides[shownCard], { opacity:0, y:-30, duration:0.22, ease:'power2.in' });
+/*
+  Card zones (progress):
+    Card 1 Corporate AV  →  0.70 – 0.775
+    Card 2 Acoustic      →  0.775 – 0.85
+    Card 3 Home Theater  →  0.85 – 0.925
+    Card 4 Hi-Fi Stereo  →  0.925 – 1.00
+*/
+const cardZones = [
+  [0.700, 0.775],
+  [0.775, 0.850],
+  [0.850, 0.925],
+  [0.925, 1.000],
+];
+const zoneMids = cardZones.map(([s,e]) => (s+e)/2);
+
+function showCard(p){
+  cardZones.forEach(([s, e], i){
+    const isLast  = i === cardZones.length - 1;
+    const inZone  = p >= s && (isLast ? true : p < e);
+    if(inZone && shownCard !== i){
+      if(shownCard >= 0){
+        gsap.to(slides[shownCard], { opacity:0, y:-30, duration:.22, ease:'power2.in' });
         dots[shownCard].classList.remove('active');
       }
-      gsap.killTweensOf(slides[i]);
-      gsap.to(slides[i], { opacity:1, y:0, duration:0.30, ease:'power2.out' });
+      gsap.to(slides[i], { opacity:1, y:0, duration:.30, ease:'power2.out' });
       dots[i].classList.add('active');
       shownCard = i;
     }
-    if (p >= e && shownCard === i) {
-      gsap.killTweensOf(slides[i]);
-      gsap.to(slides[i], { opacity:0, y:-30, duration:0.22, ease:'power2.in' });
+    if(!isLast && p >= e && shownCard === i){
+      gsap.to(slides[i], { opacity:0, y:-30, duration:.22, ease:'power2.in' });
       dots[i].classList.remove('active');
       shownCard = -1;
     }
   });
-  if (p < zones[0][0] && shownCard >= 0) {
-    gsap.killTweensOf(slides[shownCard]);
-    gsap.to(slides[shownCard], { opacity:0, y:30, duration:0.20, ease:'power2.in' });
+  if(p < cardZones[0][0] && shownCard >= 0){
+    gsap.to(slides[shownCard], { opacity:0, y:30, duration:.20, ease:'power2.in' });
     dots[shownCard].classList.remove('active');
     shownCard = -1;
   }
 }
 
-let s2ST = ScrollTrigger.create({
-  trigger:    '#s2',
+/* ── Init cards hidden ── */
+gsap.set(slides, { opacity:0, y:50 });
+
+/* ── Main pinned ScrollTrigger ── */
+const mainST = ScrollTrigger.create({
+  trigger:    '#s1',
   start:      'top top',
-  end:        '+=700%',
+  end:        '+=1200%',   /* 13 screen-heights total */
   pin:        true,
   pinSpacing: true,
-  scrub:      0.4,           /* tight follow — was 1, feels faster and more direct */
-  onUpdate(self) {
-    const p  = self.progress;
-    const sp = Math.min(1, p / 0.15);
-    gsap.set('#spkL', { x: -exitX * sp });
-    gsap.set('#spkR', { x:  exitX * sp });
-    if (vid2.duration) targetVideoTime = 6.5 + p * (vid2.duration - 6.5);
+  scrub:      0.4,
+  onUpdate(self){
+    const p = self.progress;
+
+    /* ── Map to video time ── */
+    targetTime = pToTime(p);
+
+    /* ── Phase 1: Hero left panel (0 → 0.55+) ── */
+    const heroOp = p < 0.48
+      ? 1
+      : p > 0.58
+        ? 0
+        : 1 - (p - 0.48) / 0.10;
+    qHero(heroOp);
+    qEdge(heroOp);  /* separator fades with panel */
+
+    /* ── Phase 2: "Our Services" heading (0.55 → 0.70) ── */
+    let svcTOp = 0;
+    if(p >= 0.55 && p <= 0.70){
+      const t = (p - 0.55) / 0.15;
+      /* fade in 0→0.35, hold 0.35→0.65, fade out 0.65→1 */
+      svcTOp = t < 0.35 ? t / 0.35 : t > 0.65 ? (1 - t) / 0.35 : 1;
+      svcTOp = Math.max(0, Math.min(1, svcTOp));
+    }
+    qSvcTitle(svcTOp);
+
+    /* ── Phase 3 vignette: ramps up at card start ── */
+    const vigOp = p < 0.68 ? 0 : Math.min(1, (p - 0.68) / 0.06);
+    qSvcVig(vigOp);
+
+    /* ── Progress dots ── */
+    document.getElementById('svcDots').style.opacity = p >= 0.70 ? '1' : '0';
+
+    /* ── Service cards ── */
+    showCard(p);
   },
-  onRefresh() {
+  onRefresh(){
     document.querySelectorAll('.pin-spacer')
       .forEach(el => { el.style.background='#000'; el.style.padding='0'; });
   }
 });
 
-/* Separate NON-scrubbed trigger for instant card + dot transitions.
-   Raw scroll progress → cards appear the moment you reach each zone. */
-ScrollTrigger.create({
-  trigger:    '#s2',
-  start:      'top top',
-  end:        '+=700%',
-  onUpdate(self) {
-    const p       = self.progress;
-    const svcDots = document.getElementById('svcDots');
-    if(svcDots) svcDots.style.opacity = p >= 0.15 ? '1' : '0';
-    showCard(p);
-  }
-});
-
-
-/* Speaker is position:absolute inside #s1 — no JS needed, scrolls away naturally */
-
-/* ── 8. DROPDOWN + FOOTER LINKS — scroll to card ── */
-function jumpToCard(idx) {
-  /* Calculate exact scroll position for the card's zone midpoint */
+/* ── Dropdown / footer: jump directly to a card ── */
+function jumpToCard(idx){
   ScrollTrigger.refresh();
-  const scrollStart = s2ST.start;
-  const scrollEnd   = s2ST.end;
-  const target = scrollStart + zoneMids[idx] * (scrollEnd - scrollStart);
-  window.scrollTo({ top: target, behavior: 'smooth' });
+  const ss  = mainST.start;
+  const se  = mainST.end;
+  const pos = ss + zoneMids[idx] * (se - ss);
+  window.scrollTo({ top:pos, behavior:'smooth' });
 }
 
 document.querySelectorAll('.dd-link').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
     const idx = parseInt(a.dataset.svc, 10);
-    if (!isNaN(idx) && idx >= 0 && idx < zones.length) jumpToCard(idx);
+    if(!isNaN(idx) && idx >= 0 && idx < cardZones.length) jumpToCard(idx);
   });
 });
 
 const navSvcEl = document.getElementById('navSvc');
-navSvcEl.addEventListener('click', e => {
-  e.preventDefault();
-  jumpToCard(0);
-});
-/* aria-expanded: reflect dropdown open/close state */
+navSvcEl.addEventListener('click', e => { e.preventDefault(); jumpToCard(0); });
 navSvcEl.closest('.nav-dropdown').addEventListener('mouseenter', () => navSvcEl.setAttribute('aria-expanded','true'));
 navSvcEl.closest('.nav-dropdown').addEventListener('mouseleave', () => navSvcEl.setAttribute('aria-expanded','false'));
 
-
-/* ── 8. NAV ─────────────────────────────────── */
 document.getElementById('navHome').addEventListener('click', e => {
   e.preventDefault(); window.scrollTo({ top:0, behavior:'smooth' });
 });
@@ -1363,8 +1236,13 @@ document.getElementById('navContact').addEventListener('click', e => {
   document.getElementById('footer').scrollIntoView({ behavior:'smooth' });
 });
 
-
-/* Galaxy background video — no JS needed, handled by HTML autoplay */
+/* ── Subtle mouse parallax on video (desktop) ── */
+document.addEventListener('mousemove', e => {
+  if(window.innerWidth <= 768) return;
+  const dx = (e.clientX - innerWidth  / 2) / innerWidth;
+  const dy = (e.clientY - innerHeight / 2) / innerHeight;
+  gsap.to('#mainVid', { x:dx * -14, y:`calc(-10% + ${dy * -8}px)`, duration:2.5, ease:'power1.out' });
+});
 
 /* ══════════════════════════════════════
    ORBITAL PRODUCT TIMELINE
@@ -1415,56 +1293,39 @@ document.getElementById('navContact').addEventListener('click', e => {
     },
   ];
 
-  const stage      = document.getElementById('orb-stage');
-  const N          = PRODUCTS.length;
-  let rotAngle     = 0;
-  let autoRotate   = true;
-  let activeId     = null;
-  let lastTs       = 0;
-  const nodeEls    = {};
-  const dotEls     = {};
+  const stage    = document.getElementById('orb-stage');
+  const N        = PRODUCTS.length;
+  let rotAngle   = 0;
+  let autoRotate = true;
+  let activeId   = null;
+  let lastTs     = 0;
+  const nodeEls  = {};
+  const dotEls   = {};
 
-  /* ── radius: responsive ── */
   function radius(){
-    return window.innerWidth <= 480 ? 90
-         : window.innerWidth <= 900 ? 120
-         : 160;
+    return window.innerWidth <= 480 ? 90 : window.innerWidth <= 900 ? 120 : 160;
   }
 
-  /* ── Build nodes ── */
   PRODUCTS.forEach((p, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'orb-node';
     wrap.id = `onode-${p.id}`;
-
-    /* halo */
     const halo = document.createElement('div');
     halo.className = 'orb-halo';
-    const haloSize = p.energy * 0.4 + 40;
-    halo.style.cssText = `width:${haloSize}px;height:${haloSize}px;margin-left:${-(haloSize-42)/2}px;margin-top:${-(haloSize-42)/2}px;`;
-
-    /* dot */
+    const hs = p.energy * 0.4 + 40;
+    halo.style.cssText = `width:${hs}px;height:${hs}px;margin-left:${-(hs-42)/2}px;margin-top:${-(hs-42)/2}px;`;
     const dot = document.createElement('div');
     dot.className = 'orb-dot';
     dot.textContent = p.icon;
-
-    /* label */
     const lbl = document.createElement('div');
     lbl.className = 'orb-label';
     lbl.textContent = p.title;
-
-    wrap.appendChild(halo);
-    wrap.appendChild(dot);
-    wrap.appendChild(lbl);
+    wrap.appendChild(halo); wrap.appendChild(dot); wrap.appendChild(lbl);
     stage.appendChild(wrap);
-
-    nodeEls[p.id] = wrap;
-    dotEls[p.id]  = dot;
-
+    nodeEls[p.id] = wrap; dotEls[p.id] = dot;
     wrap.addEventListener('click', e => { e.stopPropagation(); toggleNode(p.id); });
   });
 
-  /* ── Position update ── */
   function updatePositions(){
     PRODUCTS.forEach((p, i) => {
       const angle   = ((i / N) * 360 + rotAngle) % 360;
@@ -1474,34 +1335,21 @@ document.getElementById('navContact').addEventListener('click', e => {
       const y       = r * Math.sin(rad);
       const zIdx    = Math.round(100 + 50 * Math.cos(rad));
       const opacity = activeId ? (activeId === p.id ? 1 : 0.35) : Math.max(0.4, 0.4 + 0.6 * ((1 + Math.sin(rad)) / 2));
-
       const el = nodeEls[p.id];
-      el.style.transform  = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-      el.style.zIndex     = activeId === p.id ? 200 : zIdx;
-      el.style.opacity    = opacity;
+      el.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      el.style.zIndex    = activeId === p.id ? 200 : zIdx;
+      el.style.opacity   = opacity;
     });
   }
 
-  /* ── Toggle card ── */
   function toggleNode(id){
-    if(activeId === id){
-      closeCard();
-      return;
-    }
+    if(activeId === id){ closeCard(); return; }
     closeCard();
-    activeId    = id;
-    autoRotate  = false;
-
+    activeId = id; autoRotate = false;
     nodeEls[id].classList.add('active');
-
-    /* highlight related */
     const product = PRODUCTS.find(p => p.id === id);
-    product.relatedIds.forEach(rid => {
-      if(nodeEls[rid]) nodeEls[rid].classList.add('related');
-    });
-
-    /* show card */
-    showCard(id);
+    product.relatedIds.forEach(rid => { if(nodeEls[rid]) nodeEls[rid].classList.add('related'); });
+    showOrbCard(id);
   }
 
   function closeCard(){
@@ -1512,115 +1360,77 @@ document.getElementById('navContact').addEventListener('click', e => {
     }
     const existing = document.getElementById('orb-popup');
     if(existing) existing.remove();
-    activeId   = null;
-    autoRotate = true;
+    activeId = null; autoRotate = true;
   }
 
-  function showCard(id){
-    const p   = PRODUCTS.find(pr => pr.id === id);
-    const nEl = nodeEls[id];
+  function showOrbCard(id){
+    const p    = PRODUCTS.find(pr => pr.id === id);
+    const nEl  = nodeEls[id];
     const rect = nEl.getBoundingClientRect();
-
     const card = document.createElement('div');
-    card.className = 'orb-card';
-    card.id = 'orb-popup';
-
-    /* Build card safely via DOM — no innerHTML with data values (XSS prevention) */
+    card.className = 'orb-card'; card.id = 'orb-popup';
     const img = document.createElement('img');
-    img.className = 'orb-card-img';
-    img.src = p.img; img.alt = p.title;
-
+    img.className = 'orb-card-img'; img.src = p.img; img.alt = p.title;
     const award = document.createElement('div');
     award.className = `orb-card-award ${p.awardType}`;
     award.textContent = '★ ' + p.award;
-
     const titleEl = document.createElement('div');
-    titleEl.className = 'orb-card-title';
-    titleEl.textContent = p.title;
-
+    titleEl.className = 'orb-card-title'; titleEl.textContent = p.title;
     const cat = document.createElement('div');
-    cat.className = 'orb-card-cat';
-    cat.textContent = p.category;
-
+    cat.className = 'orb-card-cat'; cat.textContent = p.category;
     const desc = document.createElement('div');
-    desc.className = 'orb-card-desc';
-    desc.textContent = p.desc;
-
+    desc.className = 'orb-card-desc'; desc.textContent = p.desc;
     const energyRow = document.createElement('div');
     energyRow.className = 'orb-card-energy-row';
     const eL = document.createElement('span'); eL.textContent = '⚡ Energy Level';
     const eR = document.createElement('span'); eR.textContent = p.energy + '%';
     energyRow.appendChild(eL); energyRow.appendChild(eR);
-
     const bar = document.createElement('div'); bar.className = 'orb-card-bar';
     const fill = document.createElement('div'); fill.className = 'orb-card-fill';
     fill.style.width = Math.min(100, Math.max(0, p.energy)) + '%';
     bar.appendChild(fill);
-
     [img, award, titleEl, cat, desc, energyRow, bar].forEach(el => card.appendChild(el));
-
-    /* Position card using viewport coords (card is position:fixed) */
     let top  = rect.bottom + 12;
     let left = rect.left - 95;
-
-    /* clamp to viewport */
     if(left < 10) left = 10;
     if(left + 260 > window.innerWidth - 10) left = window.innerWidth - 270;
     if(top + 360 > window.innerHeight - 10) top = rect.top - 365;
     if(top < 10) top = 10;
-
     card.style.top  = top  + 'px';
     card.style.left = left + 'px';
-
     card.addEventListener('click', e => e.stopPropagation());
     document.body.appendChild(card);
   }
 
-  /* ── Close on background click ── */
   document.getElementById('trending').addEventListener('click', closeCard);
 
-  /* ── RAF animation loop ── */
   function animate(ts){
     requestAnimationFrame(animate);
-    if(autoRotate && ts - lastTs > 50){
-      rotAngle  = (rotAngle + 0.3) % 360;
-      lastTs    = ts;
-    }
+    if(autoRotate && ts - lastTs > 50){ rotAngle = (rotAngle + 0.3) % 360; lastTs = ts; }
     updatePositions();
   }
   requestAnimationFrame(animate);
 
-  /* ── Scroll reveal entrance ── */
-  gsap.set('#trending .tr-top', { opacity:0, y:30 });
   gsap.set('.orb-node', { opacity:0, scale:0 });
   ScrollTrigger.create({
     trigger:'#trending', start:'top 75%', once:true,
     onEnter(){
-      gsap.to('#trending .tr-top',{ opacity:1, y:0, duration:.6, ease:'power2.out' });
       gsap.to('.orb-node',{ opacity:1, scale:1, duration:.5, ease:'back.out(1.4)', stagger:.1, delay:.3 });
     }
   });
 })();
 
-/* ── 10. MOUSE PARALLAX (desktop only) ──────── */
-document.addEventListener('mousemove', e => {
-  if (window.innerWidth <= 768) return;
-  const dx = (e.clientX - innerWidth  / 2) / innerWidth;
-  const dy = (e.clientY - innerHeight / 2) / innerHeight;
-  gsap.to('#bgVideo', { x:dx*-16, y:`calc(-8% + ${dy*-10}px)`, duration:2.5, ease:'power1.out' });
-});
+/* ══════════════════════════════════════
+   MOBILE NAV
+══════════════════════════════════════ */
+const hamburger  = document.getElementById('hamburger');
+const mobileNav  = document.getElementById('mobileNav');
+const mSvcToggle = document.getElementById('mNavSvcToggle');
+const mSvcList   = document.getElementById('mNavSvcList');
 
-
-/* ── 10. MOBILE NAV ─────────────────────────── */
-const hamburger    = document.getElementById('hamburger');
-const mobileNav    = document.getElementById('mobileNav');
-const mSvcToggle   = document.getElementById('mNavSvcToggle');
-const mSvcList     = document.getElementById('mNavSvcList');
-
-/* Show mobile nav as flex when open */
 mobileNav.style.display = 'flex';
 
-function closeMobileNav() {
+function closeMobileNav(){
   hamburger.classList.remove('open');
   mobileNav.classList.remove('open');
   document.body.style.overflow = '';
@@ -1632,13 +1442,11 @@ hamburger.addEventListener('click', () => {
   document.body.style.overflow = isOpen ? 'hidden' : '';
 });
 
-/* Services sub-accordion */
 mSvcToggle.addEventListener('click', () => {
   mSvcToggle.classList.toggle('open');
   mSvcList.classList.toggle('open');
 });
 
-/* Mobile nav links */
 document.getElementById('mNavHome').addEventListener('click', e => {
   e.preventDefault(); closeMobileNav();
   window.scrollTo({ top:0, behavior:'smooth' });
@@ -1648,12 +1456,11 @@ document.getElementById('mNavContact').addEventListener('click', e => {
   document.getElementById('footer').scrollIntoView({ behavior:'smooth' });
 });
 
-/* Mobile service items — reuse jumpToCard */
 mSvcList.querySelectorAll('.dd-link').forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault(); closeMobileNav();
     const mIdx = parseInt(a.dataset.svc, 10);
-    if(!isNaN(mIdx) && mIdx >= 0 && mIdx < zones.length) setTimeout(() => jumpToCard(mIdx), 400);
+    if(!isNaN(mIdx) && mIdx >= 0 && mIdx < cardZones.length) setTimeout(() => jumpToCard(mIdx), 400);
   });
 });
 </script>
