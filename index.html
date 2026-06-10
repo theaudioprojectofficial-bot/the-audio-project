@@ -249,13 +249,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 
 
 /* ══════════════════════════════════════
-   MOBILE SPEAKER (inside #s1, scrolls away with section)
-══════════════════════════════════════ */
-#spkMobile{
-  display:none;
-}
-
-/* ══════════════════════════════════════
    TRENDING PRODUCTS — SPLIT + GALAXY
 ══════════════════════════════════════ */
 #trending{
@@ -459,35 +452,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 .footer-bottom p{font-size:.78rem;color:rgba(200,200,200,.35);}
 .footer-bottom a{color:rgba(200,200,200,.35);text-decoration:none;transition:color .18s;}
 .footer-bottom a:hover{color:#fff;}
-
-/* ══════════════════════════════════════
-   MOBILE SPEAKER (shows inside #s1 on mobile)
-══════════════════════════════════════ */
-@media(max-width:768px){
-  #spkMobile{
-    display:block;
-    position:absolute;
-    bottom:0;left:50%;
-    transform:translateX(-50%);
-    z-index:8;pointer-events:none;
-    height:55vh;width:auto;
-  }
-  #spkMobile img{
-    height:100%;width:auto;display:block;
-    filter:
-      drop-shadow(0 -2px 18px rgba(0,0,0,.4))
-      drop-shadow(0 24px 48px rgba(0,0,0,.85));
-  }
-  .spk-mob-glow{
-    position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-    width:75%;height:18px;border-radius:50%;
-    background:radial-gradient(ellipse,rgba(0,0,0,.75) 0%,transparent 70%);
-    filter:blur(8px);
-  }
-}
-@media(max-width:420px){
-  #spkMobile{height:44vh;}
-}
 
 /* ══════════════════════════════════════
    HAMBURGER BUTTON
@@ -841,10 +805,17 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
 ═══════════════════════════════════════════════════════════════ -->
 <section id="s1" role="main" aria-label="Hero and Services">
 
-  <!-- Master video — scrubbed 0→10s by scroll -->
-  <video id="mainVid" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback>
-    <source src="main-video.mp4" type="video/mp4">
-  </video>
+  <!-- Master video — scrubbed 0→10s by scroll.
+       Desktop: 4K landscape (main-video.mp4)
+       Mobile (≤768px): portrait (main-video-mobile.mp4) -->
+  <video id="mainVid" muted playsinline webkit-playsinline x5-playsinline preload="auto" disableremoteplayback></video>
+  <script nonce="TAP2026">
+    (function(){
+      var v = document.getElementById('mainVid');
+      var isMobile = window.matchMedia('(max-width:768px)').matches;
+      v.src = isMobile ? 'main-video-mobile.mp4' : 'main-video.mp4';
+    })();
+  </script>
 
   <!-- Dark vignette for service card readability (Phase 3) -->
   <div id="svcVig"></div>
@@ -936,11 +907,6 @@ nav a:hover{color:#fff} nav a:hover::after{transform:scaleX(1)}
     <div class="sdot"></div>
   </div>
 
-  <!-- Mobile speaker (visible only on mobile, scrolls away with section) -->
-  <div id="spkMobile">
-    <img src="speaker_cropped.png" alt="Speaker">
-    <div class="spk-mob-glow"></div>
-  </div>
 
 </section>
 
